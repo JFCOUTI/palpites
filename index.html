@@ -218,6 +218,14 @@ html.grande .mode{gap:14px}
 .pv .e{color:#c0392b;font-weight:700;margin-top:3px}
 .manual [hidden]{display:none!important}
 .origem{font-weight:500;font-size:.78rem;color:var(--muted)}
+.esp{margin:8px 0 12px;padding:10px 12px;border-radius:12px;border:2px solid #d4a514;background:rgba(242,183,5,.12);font-size:.92rem}
+.esp[hidden]{display:none}
+.esp b{font-weight:800}
+.esp input{padding:7px 9px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;width:120px;max-width:45%}
+.esp .btns{margin-top:8px}
+.esp details{margin-top:8px}.esp summary{cursor:pointer;font-weight:700}
+.esp .hl{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;margin:3px 0}
+.espTag{font-weight:700;font-size:.78rem;color:#9a6b00}
 </style>
 </head>
 <body>
@@ -231,6 +239,7 @@ html.grande .mode{gap:14px}
   </header>
 
   <div class="tabs" role="tablist" id="tabs"></div>
+  <div class="esp" id="espBox" hidden></div>
 
   <section class="card" id="painel">
     <div class="base">
@@ -1272,7 +1281,7 @@ function montarExtras(){
   }
 }
 function trocar(id){
-  state.game = id; state.fix.clear(); state.exc.clear(); state.jogos = []; state.exJ = null;
+  state.game = id; state.fix.clear(); state.exc.clear(); state.jogos = []; state.exJ = null; atualizarEsp(id);
   const c = GAMES[id];
   document.documentElement.dataset.game = id;
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.g === id));
@@ -1786,7 +1795,7 @@ function alternarAposta(i, marcar){
   if (marcar){
     if (idx < 0){
       const px = proximoDe(g), ex = state.exJ && state.exJ[i] ? {rot:state.exJ[i].rot, txt:state.exJ[i].txt} : null;
-      APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n, ex, alvo, dataAlvo:(px.c === alvo ? px.d : ""), origem:"app", criada:new Date().toISOString(), modo:String(state.notaModo || "").split(".")[0].slice(0,70), res:null});
+      APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n, ex, alvo, dataAlvo:(espDe(g, alvo) ? espData(g, alvo) : (px.c === alvo ? px.d : "")), esp:espDe(g, alvo), origem:"app", criada:new Date().toISOString(), modo:String(state.notaModo || "").split(".")[0].slice(0,70), res:null});
     }
     toast("Aposta efetivada e guardada!");
   } else if (idx >= 0){ APOSTAS.splice(idx, 1); toast("Aposta removida."); }
@@ -1832,7 +1841,7 @@ function renderApostas(){
     const d = document.createElement("div"); d.className = "apitem";
     const s1 = a.res ? new Set(a.res.n) : null, s2 = a.res && a.res.n2 ? new Set(a.res.n2) : null;
     const top = document.createElement("div"); top.className = "ap-top";
-    top.innerHTML = `<span>${GAMES[a.g].nome} · concurso ${a.alvo}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""} <span class="origem">· ${origemTxt(a.origem)}</span></span>`;
+    top.innerHTML = `<span>${GAMES[a.g].nome} · concurso ${a.alvo}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""} <span class="origem">· ${origemTxt(a.origem)}</span>${a.esp ? ` <span class="espTag">⭐ ${xe(a.esp)}</span>` : ""}</span>`;
     const rm = document.createElement("button"); rm.className = "b"; rm.type = "button"; rm.textContent = "Remover";
     rm.onclick = () => { APOSTAS = APOSTAS.filter(x => x.id !== a.id); salvarApostas(); refazerChecks(); };
     top.appendChild(rm); d.appendChild(top);
@@ -1864,7 +1873,7 @@ $("arqJson").onchange = async e => {
     lista.forEach(a => {
       if (!apOk(a)){ ign++; return; }
       if (APOSTAS.some(x => x.id === a.id || chaveAp(x.g, x.n, x.alvo) === chaveAp(a.g, a.n, a.alvo))){ return; }
-      APOSTAS.push({id:String(a.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6)), g:a.g, n:a.n, ex:a.ex || null, alvo:a.alvo, dataAlvo:a.dataAlvo || "", criada:a.criada || new Date().toISOString(), origem:a.origem || "", modo:a.modo || "", res:a.res || null});
+      APOSTAS.push({id:String(a.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6)), g:a.g, n:a.n, ex:a.ex || null, alvo:a.alvo, dataAlvo:a.dataAlvo || "", criada:a.criada || new Date().toISOString(), origem:a.origem || "", esp:a.esp || "", modo:a.modo || "", res:a.res || null});
       novas++;
     });
     salvarApostas(); refazerChecks(); const c = conferirApostas();
@@ -1901,7 +1910,7 @@ function htmlRel(){
     xs.forEach(a => {
       const r = a.res, s1 = r ? new Set(r.n) : null, s2 = r && r.n2 ? new Set(r.n2) : null;
       const ap = a.n.map(v => `<span class="${((s1 && s1.has(v)) || (s2 && s2.has(v))) ? "rh" : ""}">${pad(v)}</span>`).join(" ") + (a.ex ? `<br><span class="peq">${xe(a.ex.rot)}: ${xe(a.ex.txt)}</span>` : "");
-      h += `<tr><td>${a.alvo}${a.dataAlvo ? `<br><span class="peq">${xe(a.dataAlvo)}</span>` : ""}<br><span class="peq">${origemTxt(a.origem)}</span></td><td>${ap}</td><td>${r ? r.n.map(pad).join(" ") + (r.n2 ? "<br>2º: " + r.n2.map(pad).join(" ") : "") : "aguardando"}</td><td>${r ? (r.h2 != null ? `${r.h1} / ${r.h2}` : r.h1) : "—"}</td><td>${r ? xe(r.faixa || "sem prêmio") : "—"}</td></tr>`;
+      h += `<tr><td>${a.alvo}${a.dataAlvo ? `<br><span class="peq">${xe(a.dataAlvo)}</span>` : ""}<br><span class="peq">${origemTxt(a.origem)}</span>${a.esp ? `<br><b>⭐ ${xe(a.esp)}</b>` : ""}</td><td>${ap}</td><td>${r ? r.n.map(pad).join(" ") + (r.n2 ? "<br>2º: " + r.n2.map(pad).join(" ") : "") : "aguardando"}</td><td>${r ? (r.h2 != null ? `${r.h1} / ${r.h2}` : r.h1) : "—"}</td><td>${r ? xe(r.faixa || "sem prêmio") : "—"}</td></tr>`;
     });
     h += "</tbody></table>";
   });
@@ -1918,13 +1927,13 @@ function gerarRelXlsx(){
   const cs = (r, c, t, st) => `<c r="${colL(c)}${r}" s="${st || 0}" t="inlineStr"><is><t xml:space="preserve">${xe(t)}</t></is></c>`;
   const cn = (r, c, v, st) => `<c r="${colL(c)}${r}" s="${st || 0}"><v>${v}</v></c>`;
   let r1 = `<row r="1">${cs(1,1,"Conferência das apostas — Palpites da Sorte",2)}</row><row r="2">${cs(2,1,`Gerado em ${agoraTxt()}. ${L.length} aposta(s): ${conf} conferida(s), ${aguard} aguardando.`,0)}</row>`;
-  const cab = ["Loteria","Concurso","Data","Aposta (dezenas)","Extra (não conferido)","Resultado 1º sorteio","Resultado 2º sorteio","Acertos 1º","Acertos 2º","Faixa","Situação","Origem"];
+  const cab = ["Loteria","Concurso","Data","Aposta (dezenas)","Extra (não conferido)","Resultado 1º sorteio","Resultado 2º sorteio","Acertos 1º","Acertos 2º","Faixa","Situação","Origem","Concurso especial"];
   r1 += `<row r="4">${cab.map((t, i) => cs(4, i + 1, t, 1)).join("")}</row>`;
   L.forEach((a, i) => {
     const r = 5 + i, x = a.res;
-    r1 += `<row r="${r}">${cs(r,1,GAMES[a.g].nome)}${cn(r,2,a.alvo)}${cs(r,3,x ? x.d : (a.dataAlvo || ""))}${cs(r,4,a.n.map(pad).join(" "))}${cs(r,5,a.ex ? a.ex.rot + ": " + a.ex.txt : "")}${cs(r,6,x ? x.n.map(pad).join(" ") : "")}${cs(r,7,x && x.n2 ? x.n2.map(pad).join(" ") : "")}${x ? cn(r,8,x.h1) : cs(r,8,"")}${x && x.h2 != null ? cn(r,9,x.h2) : cs(r,9,"")}${cs(r,10,x ? (x.faixa || "sem prêmio") : "")}${cs(r,11,x ? "Conferida" : "Aguardando o concurso " + a.alvo)}${cs(r,12,origemTxt(a.origem))}</row>`;
+    r1 += `<row r="${r}">${cs(r,1,GAMES[a.g].nome)}${cn(r,2,a.alvo)}${cs(r,3,x ? x.d : (a.dataAlvo || ""))}${cs(r,4,a.n.map(pad).join(" "))}${cs(r,5,a.ex ? a.ex.rot + ": " + a.ex.txt : "")}${cs(r,6,x ? x.n.map(pad).join(" ") : "")}${cs(r,7,x && x.n2 ? x.n2.map(pad).join(" ") : "")}${x ? cn(r,8,x.h1) : cs(r,8,"")}${x && x.h2 != null ? cn(r,9,x.h2) : cs(r,9,"")}${cs(r,10,x ? (x.faixa || "sem prêmio") : "")}${cs(r,11,x ? "Conferida" : "Aguardando o concurso " + a.alvo)}${cs(r,12,origemTxt(a.origem))}${cs(r,13,a.esp || "")}</row>`;
   });
-  const larg = [14,10,12,44,28,44,44,10,10,14,26,16];
+  const larg = [14,10,12,44,28,44,44,10,10,14,26,16,26];
   const sheet1 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${larg.map((w, i) => `<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${r1}</sheetData></worksheet>`;
   let r2 = `<row r="1">${cs(1,1,"Resumo por loteria",2)}</row><row r="3">${["Loteria","Apostas","Conferidas","Aguardando","Com faixa de prêmio"].map((t, i) => cs(3, i + 1, t, 1)).join("")}</row>`, k = 4;
   Object.keys(GAMES).forEach(g => { const xs = L.filter(a => a.g === g); if (!xs.length) return;
@@ -1942,6 +1951,43 @@ function gerarRelXlsx(){
   ]);
 }
 $("alvoInp").addEventListener("input", refazerChecks);
+
+
+/* ---------- concursos especiais: Mega da Virada e Quina de São João ---------- */
+const ESP_Q_KEY = "palpites_esp_quina";
+const ESPECIAIS = {
+  mega:{nome:"Mega da Virada 2026", c:3100, data:"01/01/2027", hora:"11:00", obs:"Apostas até as 22h de 31/12/2026. O prêmio não acumula (se ninguém acertar a sena, vai para a quina). Dados divulgados pela imprensa: confirme no site da CAIXA."},
+  quina:{nome:"Quina de São João 2027", c:null, data:"", hora:"", obs:""}
+};
+try { const q = JSON.parse(localStorage.getItem(ESP_Q_KEY) || "null"); if (q){ ESPECIAIS.quina.c = q.c || null; ESPECIAIS.quina.data = q.d || ""; } } catch(e){}
+const espDe = (g, alvo) => { const e = ESPECIAIS[g]; return e && e.c && e.c === alvo ? e.nome : ""; };
+const espData = (g, alvo) => { const e = ESPECIAIS[g]; return espDe(g, alvo) ? (e.data + (e.hora ? " " + e.hora : "")) : ""; };
+function atualizarEsp(g){
+  const box = $("espBox"), e = ESPECIAIS[g]; if (!e){ box.hidden = true; return; }
+  box.hidden = false;
+  let h = "";
+  if (e.c){
+    h = `⭐ <b>${xe(e.nome)}</b> — concurso <b>${e.c}</b>, sorteio em <b>${xe(e.data || "data a ser definida pela CAIXA")}</b>${e.hora ? " às <b>" + e.hora + "</b>" : ""}.`;
+    if (e.obs) h += `<div class="hint">${xe(e.obs)}</div>`;
+    h += `<div class="hint">Atenção: no especial muita gente joga, então é mais provável dividir o prêmio. O modo “Anti-multidão” ajuda a fugir dos números populares (não muda a chance de acertar).</div>`;
+    h += `<div class="btns"><button class="b" id="espUsar" type="button">⭐ Apostar neste concurso especial</button></div>`;
+  } else {
+    h = `⭐ <b>${xe(e.nome)}</b> — Data a ser definida pela CAIXA.<div class="hint">Quando a CAIXA divulgar, preencha o número do concurso e a data para poder marcar apostas nele:</div>
+      <div class="btns"><input id="espQc" type="number" inputmode="numeric" min="1" placeholder="nº do concurso"><input id="espQd" placeholder="dd/mm/aaaa"><button class="b" id="espQs" type="button">Salvar</button></div>`;
+  }
+  if (g === "mega"){
+    const v = HIST.mega.ultimos.filter(x => /^31\/12\/\d{4}$/.test(x.d) && +x.d.slice(6) >= 2009).reverse();
+    if (v.length) h += `<details><summary>Histórico da Mega da Virada na base (${v.length})</summary>${v.map(x => `<div class="hl">${x.d} · concurso ${x.c}: ${x.n.map(pad).join(" ")}</div>`).join("")}<div class="hint">Só para consulta e brincadeira: sorteio passado não influencia o próximo.</div></details>`;
+  }
+  box.innerHTML = h;
+  if ($("espUsar")) $("espUsar").onclick = () => { $("alvoInp").value = e.c; $("alvoDat").textContent = "em " + e.data + (e.hora ? " às " + e.hora : ""); refazerChecks(); toast("Concurso especial selecionado."); };
+  if ($("espQs")) $("espQs").onclick = () => {
+    const c = parseInt($("espQc").value, 10), d = $("espQd").value.trim();
+    if (!(c > 0)){ toast("Informe o número do concurso."); return; }
+    ESPECIAIS.quina.c = c; ESPECIAIS.quina.data = d; try { localStorage.setItem(ESP_Q_KEY, JSON.stringify({c, d})); } catch(er){}
+    atualizarEsp(g); toast("Quina de São João salva.");
+  };
+}
 
 /* ---------- aposta manual e leitura por foto ---------- */
 const origemTxt = o => ({app:"gerada pelo app", manual:"digitada", foto:"lida da foto"}[o] || "gerada pelo app");
@@ -2002,7 +2048,7 @@ function salvarManual(){
   const ex = exManual(g), data = $("mDat").value.trim(); let novas = 0, dup = 0;
   L.forEach(a => {
     if (APOSTAS.some(x => chaveAp(x.g, x.n, x.alvo) === chaveAp(g, a.n, alvo))){ dup++; return; }
-    APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n:a.n, ex, alvo, dataAlvo:data, origem, criada:new Date().toISOString(), modo:"", res:null}); novas++;
+    APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n:a.n, ex, alvo, dataAlvo:data || espData(g, alvo), esp:espDe(g, alvo), origem, criada:new Date().toISOString(), modo:"", res:null}); novas++;
   });
   salvarApostas(); refazerChecks(); const c = conferirApostas();
   $("mTxt").value = ""; $("mSalvar").dataset.origem = ""; $("mFotoBox").hidden = true; previaManual();

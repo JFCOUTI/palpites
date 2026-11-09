@@ -1,6 +1,6 @@
 // Service worker do Palpites da Sorte: guarda o app para funcionar offline.
 // Ao publicar uma versao nova do index.html, troque o numero abaixo (ex.: v2).
-const V = "palpites-v6";
+const V = "palpites-v7";
 const ARQ = ["./", "index.html", "manifest.webmanifest", "icon-180.png", "icon-192.png", "icon-256.png"];
 
 self.addEventListener("install", e => {

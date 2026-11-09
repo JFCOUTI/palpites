@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Palpites da Sorte</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='82' font-size='84' text-anchor='middle'%3E%F0%9F%8D%80%3C/text%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Palpites">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Palpites da Sorte</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='82' font-size='84' text-anchor='middle'%3E%F0%9F%8D%80%3C/text%3E%3C/svg%3E">
 <meta name="theme-color" content="#1f9d6b">
 <style>
 :root{
@@ -20,16 +20,31 @@
 }
 :root[data-game="lotofacil"]{--accent:#8e1f8b;--soft:#f6e8f5}
 :root[data-game="lotomania"]{--accent:#e0720a;--soft:#fdf0e1}
+:root[data-game="quina"]{--accent:#3d2c9b;--soft:#ebe8f8}
+:root[data-game="duplasena"]{--accent:#b3162b;--soft:#fbe7e9}
+:root[data-game="diadesorte"]{--accent:#b8760f;--soft:#fbf0dc}
+:root[data-game="timemania"]{--accent:#0a7ea4;--soft:#e2f2f8}
+:root[data-game="maismilionaria"]{--accent:#1a3a8f;--soft:#e6ebf8}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){--bg:#121816;--card:#1b2420;--ink:#e9efe9;--muted:#92a198;--line:#2c3832;--soft:#1f2e27}
   :root:not([data-theme="light"])[data-game="lotofacil"]{--accent:#c25fc0;--soft:#2b1f2a}
   :root:not([data-theme="light"])[data-game="lotomania"]{--accent:#f2933a;--soft:#2e2418}
   :root:not([data-theme="light"])[data-game="mega"]{--accent:#34c18a}
+  :root:not([data-theme="light"])[data-game="quina"]{--accent:#8d7df0;--soft:#231f3a}
+  :root:not([data-theme="light"])[data-game="duplasena"]{--accent:#e2606e;--soft:#321c1f}
+  :root:not([data-theme="light"])[data-game="diadesorte"]{--accent:#e3a94f;--soft:#2d2518}
+  :root:not([data-theme="light"])[data-game="timemania"]{--accent:#4fb8dc;--soft:#1a2b32}
+  :root:not([data-theme="light"])[data-game="maismilionaria"]{--accent:#6f93ec;--soft:#1c2338}
 }
 :root[data-theme="dark"]{--bg:#121816;--card:#1b2420;--ink:#e9efe9;--muted:#92a198;--line:#2c3832;--soft:#1f2e27}
 :root[data-theme="dark"][data-game="lotofacil"]{--accent:#c25fc0;--soft:#2b1f2a}
 :root[data-theme="dark"][data-game="lotomania"]{--accent:#f2933a;--soft:#2e2418}
 :root[data-theme="dark"][data-game="mega"]{--accent:#34c18a}
+:root[data-theme="dark"][data-game="quina"]{--accent:#8d7df0;--soft:#231f3a}
+:root[data-theme="dark"][data-game="duplasena"]{--accent:#e2606e;--soft:#321c1f}
+:root[data-theme="dark"][data-game="diadesorte"]{--accent:#e3a94f;--soft:#2d2518}
+:root[data-theme="dark"][data-game="timemania"]{--accent:#4fb8dc;--soft:#1a2b32}
+:root[data-theme="dark"][data-game="maismilionaria"]{--accent:#6f93ec;--soft:#1c2338}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
@@ -37,7 +52,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;ma
 h1{font-size:1.5rem;margin:0;letter-spacing:-.01em}
 .sub{color:var(--muted);font-size:.92rem;margin-top:2px}
 .theme{background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;font-size:.9rem}
-.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+@media (max-width:560px){.tabs{grid-template-columns:repeat(3,1fr)}}
 .tab{border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;padding:14px 8px;cursor:pointer;font-weight:700;font-size:1rem;text-align:center}
 .tab small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;margin-top:2px}
 .tab[aria-selected="true"]{border-color:var(--accent);background:var(--soft)}
@@ -100,6 +116,8 @@ summary{cursor:pointer;font-weight:600}
 .semrep input{margin-top:4px;accent-color:var(--accent)}
 .semrep small{color:var(--muted);font-size:.82rem}
 .semrep.off{opacity:.55}
+.mx{display:flex;gap:10px;align-items:flex-start;margin:8px 0;cursor:pointer;line-height:1.3}.mx input{margin-top:4px;width:20px;height:20px;flex:none}.mx small{display:block;color:var(--muted)}
+.dgpanel{margin:8px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.dgrow{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin:8px 0}.dgrow>b{flex:0 0 100%;font-size:.88rem}.dg{width:calc(34px*var(--b,1));height:calc(34px*var(--b,1));border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:8px;font-weight:700;cursor:pointer;padding:0}.dg.on{background:var(--accent);border-color:var(--accent);color:#fff}.jogo .dgi{font-size:.8rem;color:var(--muted);margin-top:6px}
 .mode-sep{margin:16px 0 2px;font-weight:700;font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .base{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:16px}
 .base-txt{font-weight:600;font-size:.92rem;margin-bottom:8px}
@@ -154,6 +172,52 @@ html.grande .bt-row{grid-template-columns:1fr}
 html.grande .bt-val{grid-column:1}
 html.grande .mode{gap:14px}
 .theme:disabled{opacity:.35;cursor:default}
+.sel,.txt{padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;max-width:100%}
+.txt{width:100%}
+.extrabox{margin-top:14px}
+.extra{margin-top:6px;font-size:.92rem;font-weight:600;color:var(--accent)}
+#sorteio2{margin-top:8px}
+.tab{background:var(--tabc,#1b7a54);color:#fff;border:3px solid transparent;padding:10px 6px;line-height:1.25;opacity:.9}
+.tab small{color:rgba(255,255,255,.95);font-size:.76rem;margin-top:2px}
+.tab small.tp{font-size:.7rem;margin-top:5px;font-weight:600}
+.tab[aria-selected="true"]{border-color:var(--ink);background:var(--tabc,#1b7a54);opacity:1;box-shadow:0 0 0 2px var(--card),0 3px 12px rgba(0,0,0,.3)}
+.efet{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border:1px dashed var(--line);border-radius:10px;font-weight:600;font-size:.95rem;cursor:pointer}
+.efet input{width:22px;height:22px;accent-color:var(--accent)}
+.alvo{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 12px;font-weight:600}
+.alvo input{width:110px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.apitem{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;background:var(--bg)}
+.apitem .ap-top{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:700;font-size:.92rem}
+.apitem .st{font-size:.85rem;margin-top:6px}
+.apitem .st.ok{color:var(--accent);font-weight:700}
+#relOver{position:fixed;inset:0;z-index:60;background:#fff;color:#111;overflow:auto;padding:14px 16px 40px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#relOver[hidden]{display:none}
+.relbar{position:sticky;top:0;display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:6px 0 10px;border-bottom:1px solid #ccc;margin-bottom:10px}
+#relCorpo h1{font-size:1.4rem;margin:6px 0}#relCorpo h2{font-size:1.1rem;margin:18px 0 6px}
+#relCorpo table{width:100%;border-collapse:collapse;font-size:.88rem}
+#relCorpo th,#relCorpo td{border:1px solid #999;padding:5px 7px;text-align:left;vertical-align:top}
+#relCorpo th{background:#e6efe9}
+#relCorpo .rh{font-weight:700;background:#ffe27a;padding:0 2px;border-radius:3px}
+#relCorpo .peq{font-size:.8rem;color:#444}
+@media print{
+  body.relOn>*:not(#relOver){display:none!important}
+  body.relOn #relOver{position:static!important;overflow:visible!important;height:auto!important;padding:0}
+  body.relOn .relbar{display:none!important}
+  #relCorpo tr{break-inside:avoid}
+}
+.manual{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg)}
+.manual summary{font-weight:700;cursor:pointer}
+.mrow{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.mrow label,.manual .mlab{display:flex;flex-direction:column;gap:4px;font-weight:600;font-size:.9rem}
+.manual input,.manual select,.manual textarea{padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;max-width:100%}
+.manual textarea{width:100%;box-sizing:border-box;font-family:ui-monospace,Consolas,monospace;font-size:1rem}
+#mCon{width:120px}#mDat{width:130px}
+.fotobox{display:flex;gap:10px;align-items:flex-start;margin:10px 0;flex-wrap:wrap}
+.fotobox img{max-width:150px;max-height:200px;border-radius:8px;border:1px solid var(--line)}
+.pv{margin:6px 0;padding:6px 8px;border-radius:8px;border:1px solid var(--line);font-size:.88rem}
+.pv.err{border-color:#c0392b;background:rgba(192,57,43,.08)}
+.pv .e{color:#c0392b;font-weight:700;margin-top:3px}
+.manual [hidden]{display:none!important}
+.origem{font-weight:500;font-size:.78rem;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -161,7 +225,7 @@ html.grande .mode{gap:14px}
   <header>
     <div>
       <h1>🍀 Palpites da Sorte</h1>
-      <div class="sub">Mega-Sena · Lotofácil · Lotomania — escolhe, toca em gerar e pronto, tchê.</div>
+      <div class="sub">As 8 loterias de números da CAIXA — escolhe, toca em gerar e pronto, tchê.</div>
     </div>
     <div style="display:flex;gap:8px;align-items:center"><button class="theme" id="menos" type="button" aria-label="Diminuir letras e botões"><b>A−</b></button><button class="theme" id="mais" type="button" aria-label="Aumentar letras e botões"><b>A+</b></button><button class="theme" id="tema" type="button" aria-label="Alternar tema claro/escuro">🌓</button></div>
   </header>
@@ -174,6 +238,7 @@ html.grande .mode{gap:14px}
       <div class="btns">
         <button class="b" id="btnAtualizar" type="button">🔄 Atualizar da CAIXA</button>
         <button class="b" id="btnImportar" type="button">📂 Importar planilha</button>
+        <button class="b" id="btnTodas" type="button" hidden>📥 Baixar o histórico de todas</button>
         <input type="file" id="arq" accept=".xlsx,.csv,.txt" hidden>
       </div>
       <div class="hint" id="baseMsg"></div>
@@ -198,6 +263,9 @@ html.grande .mode{gap:14px}
       </div>
     </div>
 
+    <div class="extrabox" id="extraBox" hidden></div>
+    <datalist id="timesList"></datalist>
+
     <label class="f" style="margin-top:16px">Como montar os jogos?</label>
     <div class="modes">
       <label class="mode"><input type="radio" name="modo" value="equilibrado" checked>
@@ -206,6 +274,21 @@ html.grande .mode{gap:14px}
         <div><b>100% aleatório</b><span>Qualquer combinação vale, igual a “Surpresinha” da lotérica.</span></div></label>
       <label class="mode"><input type="radio" name="modo" value="quentes">
         <div><b>Pelos últimos sorteios</b><span>Dá mais peso aos números que mais saíram nos últimos 50 concursos (mesma ideia do teu sistema antigo).</span></div></label>
+    </div>
+
+    <div class="dgpanel" id="mixPanel" hidden>
+      <div class="hint"><b>🎛 Misturar com outras estratégias.</b> Marca as que entram junto com o Equilibrado: os filtros se somam e os sorteios se combinam. Sem nenhuma marcada, vale o Equilibrado puro.</div>
+      <label class="mx"><input type="checkbox" id="mxMult"><span><b>Anti-multidão</b><small>só jogos que fogem de aniversários, sequências e desenhos do volante</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxAmp"><span><b>Amplitudes</b><small>só jogos com amplitude e intervalos na faixa mais comum</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxDig"><span><b>Dígitos</b><small>só jogos com os 3 dígitos nos que tu marcar (painel dos dígitos aparece)</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxFib"><span><b>Fibonacci</b><small>só jogos com a quantidade de números de Fibonacci na faixa mais comum</small></span></label>
+      <label class="mx" style="align-items:center"><span><b>Fractal como fonte das dezenas</b><small>de onde saem os números; filtros e pesos marcados continuam valendo</small></span>
+        <select id="mxFrac" style="margin-left:auto;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;max-width:48%"><option value="">nenhum</option><option value="sorteia">🎲 sortear um a cada jogo</option><option value="caos">Sierpinski (Caos)</option><option value="barnsley">Samambaia de Barnsley</option><option value="logistico">Mapa logístico</option><option value="henon">Atrator de Hénon</option><option value="pascal">Pascal mod 9</option></select></label>
+      <label class="mx"><input type="checkbox" id="mxQuentes"><span><b>Pelos últimos sorteios</b><small>dá mais peso aos que mais saíram nos últimos 50 concursos</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxFreq"><span><b>Mais frequentes do histórico</b><small>dá mais peso aos que mais saíram desde o início</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxSkips"><span><b>Saliu · Skips</b><small>só entram números com skip até a mediana</small></span></label>
+      <label class="mx"><input type="checkbox" id="mxGrid"><span><b>Saliu · Wonder Grid</b><small>número-chave e grade dos que mais saem com ele</small></span></label>
+      <button class="link" type="button" id="mxTodas">Marcar todas</button> · <button class="link" type="button" id="mxNenhuma">Limpar</button>
     </div>
 
     <label class="semrep"><input type="checkbox" id="semRep" checked>
@@ -222,6 +305,65 @@ html.grande .mode{gap:14px}
         <div><b>Saliu · Skips (mediana FFG)</b><span>Skip = quantos concursos o número ficou sem sair. Só entram no sorteio os números com skip até a mediana da Fórmula Fundamental do Jogo; depois aplica os filtros de soma e par/ímpar.</span></div></label>
       <label class="mode"><input type="radio" name="modo" value="saliu_grid">
         <div><b>Saliu · Wonder Grid</b><span>Escolhe um número-chave (skip abaixo da mediana, o mais frequente), monta a grade com os números que mais saem junto com ele e combina o número-chave com a grade.</span></div></label>
+    </div>
+
+    <div class="mode-sep">Estratégia das Amplitudes</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="amplitude">
+        <div><b>Amplitude e intervalos</b><span>Amplitude = maior dezena − menor dezena; ela é a soma dos intervalos entre dezenas vizinhas. Só ficam jogos com amplitude na faixa mais comum do histórico (80% centrais) e sem nenhum intervalo gigante entre vizinhas.</span></div></label>
+    </div>
+
+    <div class="mode-sep">Estratégia do Caos (fractal)</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="caos">
+        <div><b>Jogo do Caos (Triângulo de Sierpinski)</b><span>Parte de um ponto aleatório e, a cada passo, sorteia um dos 3 vértices do triângulo e anda até a metade do caminho. Cada ponto cai numa casa da grade e vira uma dezena. Aleatoriedade com desenho fractal, sem peso nenhum por histórico.</span></div></label>
+    </div>
+
+    <div class="mode-sep">Estratégia dos Dígitos</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="digitos">
+        <div><b>Dígitos (raiz digital 1 a 9)</b><span>Cada jogo tem 3 dígitos: o das dezenas (soma dos algarismos até sobrar 1), o dos intervalos entre vizinhas e o final (a soma dos dois, reduzida). Só ficam jogos cujos 3 dígitos estão entre os que tu marcar.</span></div></label>
+    </div>
+    <div class="dgpanel" id="digPanel" hidden>
+      <div class="hint" id="digTxt"></div>
+      <div class="dgrow"><b>Dígito das dezenas</b><span id="dgA" style="display:contents"></span></div>
+      <div class="dgrow"><b>Dígito dos intervalos (= amplitude)</b><span id="dgB" style="display:contents"></span></div>
+      <div class="dgrow"><b>Dígito final</b><span id="dgC" style="display:contents"></span></div>
+      <button class="link" type="button" id="digAuto">↺ Voltar ao automático</button>
+    </div>
+
+    <div class="mode-sep">Teoria dos Jogos</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="antimultidao">
+        <div><b>Anti-multidão (jogar contra os outros apostadores)</b><span>Não muda a chance de ganhar, mas tenta mudar o quanto tu leva se ganhar: o prêmio é dividido entre os ganhadores, e a maioria joga datas de aniversário (até 31), sequências e desenhos no volante. Aqui ficam só jogos que fogem desses padrões.</span></div></label>
+      <label class="mode"><input type="radio" name="modo" value="fechamento">
+        <div><b>Fechamento (garantia matemática)</b><span>Tu escolhe um grupo de números (o “fecho”) e o app monta a menor lista de jogos que garante um mínimo de acertos se os sorteados caírem todos dentro do grupo. A quantidade de jogos é definida pelo fecho.</span></div></label>
+    </div>
+    <div class="dgpanel" id="fecPanel" hidden>
+      <div class="hint" id="fecTxt"></div>
+      <div class="dgrow" style="align-items:center">
+        <b style="flex:0 0 auto">Números no fecho</b><input id="fecV" type="number" min="7" max="20" value="10" style="width:5em;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit">
+        <b style="flex:0 0 auto;margin-left:10px">Garantir pelo menos</b><select id="fecM" style="padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit"></select>
+      </div>
+      <div class="hint">Se tu marcar números como <b>fixos</b> em “Escolher números”, eles entram no fecho; o app completa o resto sorteando. Marcou fixos demais? Então o fecho é só deles.</div>
+    </div>
+
+    <div class="mode-sep">Mais fractais e caos</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="barnsley">
+        <div><b>Samambaia de Barnsley</b><span>Jogo do caos com 4 regras sorteadas com pesos diferentes (1%, 85%, 7%, 7%). Os pontos desenham uma folha de samambaia, e cada ponto cai numa casa da grade e vira dezena.</span></div></label>
+      <label class="mode"><input type="radio" name="modo" value="logistico">
+        <div><b>Mapa logístico</b><span>Caos de verdade, sem dado: x → r·x·(1−x), com r perto de 3,9. Cada número depende só do anterior, mas é imprevisível na prática. Cada passo vira uma dezena.</span></div></label>
+      <label class="mode"><input type="radio" name="modo" value="henon">
+        <div><b>Atrator de Hénon</b><span>Mapa caótico em duas dimensões que desenha um bumerangue fractal. Os pontos caem na grade e viram dezenas.</span></div></label>
+      <label class="mode"><input type="radio" name="modo" value="pascal">
+        <div><b>Triângulo de Pascal módulo 9</b><span>Pega um pedaço de uma linha do triângulo de Pascal e usa o resto da divisão por 9 (os mesmos dígitos de 1 a 9 dos Dígitos) como peso de cada dezena.</span></div></label>
+    </div>
+
+    <div class="mode-sep">Estratégia de Fibonacci</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="fibonacci">
+        <div><b>Fibonacci e razão áurea</b><span>As dezenas são espalhadas pela razão áurea (φ ≈ 1,618, que nasce da sequência 1, 1, 2, 3, 5, 8, 13…), com um tremidinho aleatório. Só ficam jogos com a quantidade de números de Fibonacci (1, 2, 3, 5, 8, 13, 21, 34, 55, 89) na faixa mais comum do histórico.</span></div></label>
     </div>
 
     <details id="det">
@@ -248,22 +390,63 @@ html.grande .mode{gap:14px}
       <div class="btns">
         <button class="b" id="copiarTudo" type="button">📋 Copiar tudo</button>
         <button class="b" id="baixarTxt" type="button">⬇ .txt</button>
+        <button class="b" id="baixarXlsx" type="button" style="display:none">⬇ .xlsx (Excel)</button>
         <button class="b" id="baixarCsv" type="button">⬇ .csv (Excel)</button>
         <button class="b" id="imprimir" type="button">🖨 Imprimir</button>
       </div>
     </div>
+    <div class="alvo"><label for="alvoInp">Aposta para o concurso nº</label><input id="alvoInp" type="number" inputmode="numeric" min="1"><span id="alvoDat" class="hint"></span></div>
     <div id="lista"></div>
     <div class="note" id="notaRes"></div>
     <details class="chk">
       <summary>Conferir com o resultado do sorteio</summary>
       <div class="hint" id="ultimoHint"></div>
       <textarea id="sorteio" placeholder="Digite ou cole as dezenas sorteadas. Ex.: 04 17 23 38 45 52"></textarea>
+      <textarea id="sorteio2" placeholder="Dupla Sena: dezenas do 2º sorteio" hidden></textarea>
       <div class="btns" style="margin-top:8px">
         <button class="b" id="conferir" type="button">Conferir</button>
         <button class="b" id="usarUltimo" type="button">Usar último da base</button>
       </div>
     </details>
   </section>
+
+  <details class="card" id="apCard">
+    <summary style="font-size:1.05rem;font-weight:700">🎟 Minhas apostas efetivadas <span id="apCont"></span></summary>
+    <div class="hint" style="margin-top:8px">Marque “Aposta efetivada” nos jogos que você realmente fez na lotérica. Elas ficam guardadas neste aparelho. Quando a base de resultados ganhar o concurso da aposta (Atualizar da CAIXA ou Importar planilha), o app confere sozinho e libera o relatório em .xlsx e PDF. O mês de sorte, o time e os trevos não entram na conferência.</div>
+    <div class="note" id="apBanner" hidden></div>
+    <details class="manual" id="manCard">
+      <summary>➕ Adicionar aposta manual (digitar ou ler da foto)</summary>
+      <div class="mrow">
+        <label>Loteria <select id="mLot"></select></label>
+        <label>Concurso nº <input id="mCon" type="number" inputmode="numeric" min="1"></label>
+        <label>Data (opcional) <input id="mDat" placeholder="dd/mm/aaaa" maxlength="10"></label>
+      </div>
+      <div class="mrow" id="mEx" hidden>
+        <label id="mExMesL">Mês de Sorte <select id="mMes"><option value="">—</option></select></label>
+        <label id="mExTimeL">Time do Coração <input id="mTime" placeholder="ex.: Grêmio"></label>
+        <label id="mExTrevL">Trevos <input id="mTrev" placeholder="ex.: 2 5"></label>
+      </div>
+      <label class="mlab">Dezenas (uma aposta por linha; pode colar várias)
+        <textarea id="mTxt" rows="5" spellcheck="false" placeholder="05 10 22 31 32 47"></textarea></label>
+      <div class="btns" style="margin-top:8px">
+        <button class="b" id="mFoto" type="button">📷 Ler números da foto</button>
+        <button class="b" id="mSalvar" type="button">💾 Salvar aposta(s)</button>
+        <input type="file" id="mArq" accept="image/*" hidden>
+      </div>
+      <div class="fotobox" id="mFotoBox" hidden><img id="mImg" alt="foto da aposta"><div class="hint" id="mOcrSt"></div></div>
+      <div id="mPrev"></div>
+      <div class="hint">A leitura da foto é só um atalho: o app preenche as dezenas aí em cima e você confere com a foto e corrige antes de salvar. Na primeira foto precisa de internet para baixar o leitor de texto.</div>
+    </details>
+    <div class="btns" style="margin-top:10px">
+      <button class="b" id="apRel" type="button">📄 Relatório (PDF / .xlsx)</button>
+      <button class="b" id="apExp" type="button">⬇ Exportar apostas (.json)</button>
+      <button class="b" id="apImp" type="button">📂 Importar apostas (.json)</button>
+      <button class="b" id="apDireto" type="button" hidden>💾 Salvar direto em arquivo</button>
+      <input type="file" id="arqJson" accept=".json,application/json" hidden>
+    </div>
+    <div class="hint" id="apDiretoTxt"></div>
+    <div id="apLista"></div>
+  </details>
 
   <details class="card bt-card" id="btCard">
     <summary style="font-size:1.05rem;font-weight:700">🧪 Teste retroativo (backtest)</summary>
@@ -283,6 +466,14 @@ html.grande .mode{gap:14px}
   <div class="foot" id="aviso">Loteria é sorte pura: nenhum método aumenta a chance de ganhar — o “Equilibrado” só evita combinações pouco comuns. Jogue com moderação. +18.</div>
 </div>
 <div class="toast" id="toast"></div>
+<div id="relOver" hidden>
+  <div class="relbar">
+    <button class="b" id="relPdf" type="button">🖨 Imprimir / Salvar PDF</button>
+    <button class="b" id="relXlsx" type="button">⬇ .xlsx (Excel)</button>
+    <button class="b" id="relFechar" type="button">✕ Fechar</button>
+  </div>
+  <div id="relCorpo"></div>
+</div>
 
 <script>
 "use strict";
@@ -291,10 +482,31 @@ const HIST = {"mega":{"total":3041,"ultimos":[{"c":1,"d":"11/03/1996","n":[4,5,3
 const GAMES = {
   mega:      {nome:"Mega-Sena", curto:"6 de 60",  min:1, max:60,  sorteadas:6,  minDez:6,  maxDez:20, padrao:6,  acerto:6,  desc:"6 de 60"},
   lotofacil: {nome:"Lotofácil", curto:"15 de 25", min:1, max:25,  sorteadas:15, minDez:15, maxDez:20, padrao:15, acerto:15, desc:"15 de 25"},
-  lotomania: {nome:"Lotomania", curto:"50 de 100",min:0, max:99,  sorteadas:20, minDez:50, maxDez:50, padrao:50, acerto:20, desc:"50 de 00–99"}
+  quina:     {nome:"Quina", curto:"5 de 80", min:1, max:80, sorteadas:5, minDez:5, maxDez:15, padrao:5, acerto:5, desc:"5 de 80"},
+  lotomania: {nome:"Lotomania", curto:"50 de 100",min:0, max:99,  sorteadas:20, minDez:50, maxDez:50, padrao:50, acerto:20, desc:"50 de 00–99"},
+  duplasena: {nome:"Dupla Sena", curto:"6 de 50 · ×2", min:1, max:50, sorteadas:6, minDez:6, maxDez:15, padrao:6, acerto:6, desc:"6 de 50, com dois sorteios", sorteios:2},
+  diadesorte:{nome:"Dia de Sorte", curto:"7 de 31 + mês", min:1, max:31, sorteadas:7, minDez:7, maxDez:15, padrao:7, acerto:7, desc:"7 de 31 + Mês de Sorte", extra:"mes", extraRot:"Mês de Sorte"},
+  timemania: {nome:"Timemania", curto:"10 de 80 + time", min:1, max:80, sorteadas:7, minDez:10, maxDez:10, padrao:10, acerto:7, desc:"10 de 80 (7 sorteadas) + Time do Coração", extra:"time", extraRot:"Time do Coração"},
+  maismilionaria:{nome:"+Milionária", curto:"6 de 50 + trevos", min:1, max:50, sorteadas:6, minDez:6, maxDez:12, padrao:6, acerto:6, desc:"6 de 50 + trevos", extra:"trevos", extraRot:"Trevos"}
 };
-const state = {game:"mega", fix:new Set(), exc:new Set(), jogos:[], exportSeq:0};
+Object.assign(GAMES.mega,{cor:"1F9D6B",aniv:true}); Object.assign(GAMES.lotofacil,{cor:"8E1F8B"}); Object.assign(GAMES.lotomania,{cor:"E0720A"});
+Object.assign(GAMES.quina,{cor:"3D2C9B",aniv:true}); Object.assign(GAMES.duplasena,{cor:"B3162B",aniv:true}); Object.assign(GAMES.diadesorte,{cor:"B8760F"});
+Object.assign(GAMES.timemania,{cor:"0A7EA4",aniv:true}); Object.assign(GAMES.maismilionaria,{cor:"1A3A8F",aniv:true});
+Object.assign(GAMES.mega,{tab:"1B7A54"}); Object.assign(GAMES.lotofacil,{tab:"8E1F8B"}); Object.assign(GAMES.quina,{tab:"3D2C9B"}); Object.assign(GAMES.lotomania,{tab:"B85A06"}); Object.assign(GAMES.duplasena,{tab:"B3162B"}); Object.assign(GAMES.diadesorte,{tab:"946007"}); Object.assign(GAMES.timemania,{tab:"0A7EA4"}); Object.assign(GAMES.maismilionaria,{tab:"1A3A8F"});
+["quina","duplasena","diadesorte","timemania","maismilionaria"].forEach(g => { if (!HIST[g]) HIST[g] = {total:0, ultimos:[]}; });
+const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+const TIMES = ["ABC","América-MG","Athletico-PR","Atlético-GO","Atlético-MG","Avaí","Bahia","Botafogo","Bragantino","Ceará","Chapecoense","Corinthians","Coritiba","CRB","Criciúma","Cruzeiro","CSA","Cuiabá","Figueirense","Flamengo","Fluminense","Fortaleza","Goiás","Grêmio","Guarani","Internacional","Juventude","Mirassol","Náutico","Operário-PR","Palmeiras","Paysandu","Ponte Preta","Remo","Santa Cruz","Santos","São Paulo","Sampaio Corrêa","Sport","Vasco","Vila Nova","Vitória"];
+const state = {game:"mega", fix:new Set(), exc:new Set(), jogos:[], exportSeq:0, exJ:null};
 const $ = id => document.getElementById(id);
+const cacheSim = {};
+function histEf(g){                       // histórico real (se tiver >= 100 concursos) ou 1.000 sorteios simulados (sem dado real)
+  const r = HIST[g].ultimos; if (r.length >= 100) return r;
+  if (cacheSim[g]) return cacheSim[g];
+  const cfg = GAMES[g], vals = []; for (let v = cfg.min; v <= cfg.max; v++) vals.push(v);
+  const a = []; for (let i = 0; i < 1000; i++) a.push({c:1000000 + i, d:"simulado", n:sorteioSimples(vals, cfg.sorteadas).sort((x,y)=>x-y)});
+  a.sim = true; return cacheSim[g] = a;
+}
+const SIMTXT = " (Sem histórico baixado: as faixas foram calculadas em 1.000 sorteios simulados, que pro acaso dão a mesma distribuição.)";
 const pad = n => String(n).padStart(2,"0");
 
 /* ---------- aleatoriedade segura ---------- */
@@ -353,7 +565,7 @@ function equilibrado(jogo, st, g){
   const soma = jogo.reduce((a,b)=>a+b,0), pares = jogo.filter(v=>v%2===0).length;
   if (Math.abs(soma - st.mediaSoma) > 1.5 * st.sdSoma) return false;
   if (Math.abs(pares - st.mediaPar) > Math.max(1, 1.25 * st.sdPar)) return false;
-  if (g === "mega" && maiorSequencia(jogo) > 3) return false;
+  if (GAMES[g].sorteadas <= 7 && maiorSequencia(jogo) > 3) return false;
   return true;
 }
 
@@ -417,18 +629,309 @@ function pesosFrequentes(g, m){
   return pm;
 }
 
+/* ---------- Amplitude e intervalos ---------- */
+function ampInfo(jogo){
+  const a = jogo.slice().sort((x,y)=>x-y); let mg = 0;
+  for (let i = 1; i < a.length; i++) if (a[i] - a[i-1] > mg) mg = a[i] - a[i-1];
+  return {amp:a[a.length-1] - a[0], maxGap:mg};
+}
+function percentil(v, p){ const a = v.slice().sort((x,y)=>x-y); return a[Math.min(a.length-1, Math.floor(p * (a.length-1)))]; }
+const cacheAmp = {};
+function amplitudeFaixa(g, k, hist){
+  const cfg = GAMES[g], ult = hist[hist.length-1].c, ch = g + "|" + k + "|" + ult;
+  if (cacheAmp[ch]) return cacheAmp[ch];
+  let amostras, fonte;
+  if (k === cfg.sorteadas){
+    const h = hist.slice(-1000); amostras = h.map(d => ampInfo(d.n)); fonte = `dos últimos ${h.length} concursos`;
+  } else {
+    const N = cfg.max - cfg.min + 1; amostras = []; fonte = `de 3000 jogos simulados de ${k} dezenas (o histórico só tem jogos de ${cfg.sorteadas})`;
+    for (let t = 0; t < 3000; t++){
+      const p = Array.from({length:N}, (_, i) => cfg.min + i);
+      for (let i = 0; i < k; i++){ const j = i + Math.floor(Math.random() * (N - i)); const x = p[i]; p[i] = p[j]; p[j] = x; }
+      amostras.push(ampInfo(p.slice(0, k)));
+    }
+  }
+  const r = {aMin:percentil(amostras.map(x=>x.amp), 0.10), aMax:percentil(amostras.map(x=>x.amp), 0.90), gMax:percentil(amostras.map(x=>x.maxGap), 0.95), fonte};
+  return cacheAmp[ch] = r;
+}
+
+/* ---------- Jogo do Caos (Sierpinski) ---------- */
+const CAOS_G = 64;                                   // grade 64x64 sobre o quadrado do triângulo
+function caosDezena(x, y, N){                        // ponto (x,y) -> índice 0..N-1 (casas dobradas em N números)
+  const c = Math.min(CAOS_G - 1, Math.floor(x * CAOS_G)), l = Math.min(CAOS_G - 1, Math.floor(y * CAOS_G));
+  return (l * CAOS_G + c) % N;
+}
+function caosSorteio(pool, nExtra, cfg, pw){
+  const N = cfg.max - cfg.min + 1, ok = new Set(pool), V = [[0,0],[1,0],[0.5,1]], out = [], usados = new Set();
+  let x = Math.random(), y = Math.random() * (1 - Math.abs(2 * x - 1));      // ponto inicial dentro do triângulo
+  for (let i = 0, passos = 0; out.length < nExtra && passos < 6000; passos++){
+    const v = V[Math.floor(Math.random() * 3)];
+    x = (x + v[0]) / 2; y = (y + v[1]) / 2;                                  // anda até a metade do caminho
+    if (passos < 20) continue;                                               // descarta os primeiros passos
+    const d = cfg.min + caosDezena(x, y, N);
+    if (ok.has(d) && !usados.has(d)){ if (pw && Math.random() * pw.max > pw.f(d)) continue; usados.add(d); out.push(d); }
+  }
+  if (out.length < nExtra){                                                  // raríssimo: completa com sorteio simples
+    const resto = pool.filter(v => !usados.has(v)); out.push(...sorteioSimples(resto, nExtra - out.length));
+  }
+  return out;
+}
+
+/* ---------- Teoria dos Jogos: anti-multidão ---------- */
+function maiorSequencia(a){ let m = 1, c = 1; for (let i = 1; i < a.length; i++){ c = a[i] - a[i-1] === 1 ? c + 1 : 1; if (c > m) m = c; } return m; }
+function multidaoInfo(jogo, g){
+  const a = jogo.slice().sort((x,y)=>x-y);
+  return {ate31:a.filter(v => v <= 31).length, run:maiorSequencia(a)};
+}
+function multidaoOk(jogo, g){
+  const a = jogo.slice().sort((x,y)=>x-y), k = a.length, run = maiorSequencia(a);
+  const cont = f => { const m = {}; let mx = 0; a.forEach(v => { const x = f(v); m[x] = (m[x] || 0) + 1; if (m[x] > mx) mx = m[x]; }); return mx; };
+  if (g === "mega"){
+    if (a.filter(v => v <= 31).length > Math.floor(k * 0.34)) return false;      // aniversários
+    if (a.filter(v => v <= 12).length > Math.ceil(k / 6)) return false;          // meses
+    if (run > 2) return false;                                                    // sequências
+    for (let i = 3; i < k; i++) if (a[i] - a[i-1] === a[i-1] - a[i-2] && a[i-1] - a[i-2] === a[i-2] - a[i-3]) return false;   // progressão aritmética (5, 10, 15, 20…)
+    const lim = Math.ceil(k / 3);
+    return cont(v => Math.floor((v - 1) / 10)) <= lim && cont(v => (v - 1) % 10) <= lim;   // linhas e colunas do volante
+  }
+  if (g !== "mega" && g !== "lotofacil" && g !== "lotomania"){
+    const mx = GAMES[g].max;
+    if (mx > 31 && a.filter(v => v <= 31).length > Math.max(1, Math.round(k * (31 / mx) * 0.65))) return false;      // aniversários
+    if (a.filter(v => v <= 12).length > Math.max(1, Math.ceil(k * (12 / mx) * (mx > 31 ? 1.2 : 0.8)))) return false;   // meses
+    if (run > 2) return false;
+    for (let i = 3; i < k; i++) if (a[i] - a[i-1] === a[i-1] - a[i-2] && a[i-1] - a[i-2] === a[i-2] - a[i-3]) return false;
+    const lim = Math.ceil(k / 3);
+    return cont(v => Math.floor((v - 1) / 10)) <= lim && cont(v => (v - 1) % 10) <= lim;
+  }
+  if (g === "lotofacil"){
+    if (run > Math.max(6, k - 9)) return false;
+    if (k <= 17 && (cont(v => Math.floor((v - 1) / 5)) === 5 || cont(v => (v - 1) % 5) === 5)) return false;   // linha ou coluna cheia
+    return true;
+  }
+  const baixos = a.filter(v => v < 50).length;
+  return run < 8 && cont(v => Math.floor(v / 10)) < 10 && cont(v => v % 10) < 10 && baixos <= 38 && baixos >= 12;
+}
+const MULT_DESC = {
+  mega:"fogem de aniversários (no máximo 1/3 dos números até 31 e quase nenhum até 12), de sequências (nada de 3 seguidos), de progressões (5-10-15-20) e de amontoar números na mesma linha ou coluna do volante",
+  lotofacil:"fogem de sequências muito longas e de linhas ou colunas cheias do volante",
+  lotomania:"fogem de sequências longas, de linhas ou colunas inteiras do volante e de jogos muito carregados numa metade (00–49 ou 50–99)",
+  quina:"fogem de aniversários (poucos números até 31 e quase nenhum até 12), de sequências, de progressões e de amontoar números na mesma linha ou coluna do volante",
+  duplasena:"fogem de aniversários (poucos números até 31 e quase nenhum até 12), de sequências, de progressões e de amontoar números na mesma linha ou coluna do volante",
+  diadesorte:"fogem de números só de mês (até 12), de sequências, de progressões e de amontoar números na mesma linha ou coluna do volante",
+  timemania:"fogem de aniversários (poucos números até 31 e quase nenhum até 12), de sequências, de progressões e de amontoar números na mesma linha ou coluna do volante",
+  maismilionaria:"fogem de aniversários (poucos números até 31 e quase nenhum até 12), de sequências, de progressões e de amontoar números na mesma linha ou coluna do volante"
+};
+
+/* ---------- Teoria dos Jogos: fechamento (cobertura) ---------- */
+function pcnt(x){ x = x - ((x >>> 1) & 0x55555555); x = (x & 0x33333333) + ((x >>> 2) & 0x33333333); return Math.imul((x + (x >>> 4)) & 0x0F0F0F0F, 0x01010101) >>> 24; }
+function combMasks(v, r){ const out = []; (function rec(ini, falta, m){ if (!falta){ out.push(m); return; } for (let i = ini; i <= v - falta; i++) rec(i + 1, falta - 1, m | (1 << i)); })(0, r, 0); return Int32Array.from(out); }
+function randMask(v, k){ const idx = Array.from({length:v}, (_, i) => i); for (let i = 0; i < k; i++){ const j = i + Math.floor(Math.random() * (v - i)); const t = idx[i]; idx[i] = idx[j]; idx[j] = t; } let m = 0; for (let i = 0; i < k; i++) m |= 1 << idx[i]; return m; }
+function fechar(v, S, k, m, limiteMs){                  // devolve máscaras dos jogos; garante: todo sorteio de S dentro dos v números tem um jogo com >= m acertos
+  const draws = combMasks(v, S); let nu = draws.length, unc = Int32Array.from(draws);
+  const blocos = [], t0 = performance.now();
+  while (nu > 0 && blocos.length < 600 && performance.now() - t0 < limiteMs){
+    const cs = Math.max(25, Math.min(160, Math.floor(1500000 / nu))); let melhor = 0, gm = -1;
+    for (let c = 0; c < cs; c++){
+      let B;
+      if (c % 4 === 0){ B = unc[Math.floor(Math.random() * nu)]; while (pcnt(B) < k){ const b = 1 << Math.floor(Math.random() * v); B |= b; } }   // candidato que cobre um sorteio ainda descoberto
+      else B = randMask(v, k);
+      let ganho = 0; for (let i = 0; i < nu; i++) if (pcnt(B & unc[i]) >= m) ganho++;
+      if (ganho > gm){ gm = ganho; melhor = B; }
+    }
+    blocos.push(melhor); let j = 0; for (let i = 0; i < nu; i++) if (pcnt(melhor & unc[i]) < m) unc[j++] = unc[i]; nu = j;
+  }
+  for (let i = 0; i < nu; i++){                          // o que sobrou (limite de tempo): um jogo por sorteio descoberto
+    let B = unc[i]; if (blocos.some(b => pcnt(b & B) >= m)) continue; while (pcnt(B) < k) B |= 1 << Math.floor(Math.random() * v); blocos.push(B);
+  }
+  const cobre = Uint16Array.from(draws, d => blocos.reduce((t, b) => t + (pcnt(b & d) >= m ? 1 : 0), 0));       // poda: tira jogo que sobra
+  for (let b = blocos.length - 1; b >= 0; b--){
+    let sobra = true; for (let i = 0; i < draws.length && sobra; i++) if (pcnt(blocos[b] & draws[i]) >= m && cobre[i] < 2) sobra = false;
+    if (sobra){ for (let i = 0; i < draws.length; i++) if (pcnt(blocos[b] & draws[i]) >= m) cobre[i]--; blocos.splice(b, 1); }
+  }
+  return {blocos, sorteios:draws.length};
+}
+function fechamento(o, cfg, fixos, pool, k){
+  if (cfg.nome === "Lotomania") return {erro:"O fechamento não serve pra Lotomania (cada jogo tem 50 dezenas). Usa Mega-Sena ou Lotofácil."};
+  const S = cfg.sorteadas, m = o.fecM, v0 = o.fecV;
+  if (!(v0 >= 7 && v0 <= 20)) return {erro:"Escolhe de 7 a 20 números pro fecho."};
+  let U = fixos.slice(); const resto = sorteioSimples(pool, Math.max(0, Math.min(pool.length, v0 - U.length)));
+  U = U.concat(resto).sort((a,b)=>a-b); const v = U.length;
+  if (v > 22) return {erro:"Fixos demais pro fecho: usa no máximo 20 números fixos."};
+  if (v <= k) return {erro:`O fecho tem ${v} números e cada jogo tem ${k}: o fecho precisa ter mais números do que as dezenas de cada jogo.`};
+  if (v < S) return {erro:`O fecho precisa ter pelo menos ${S} números.`};
+  if (!(m >= 1 && m <= Math.min(k, S))) return {erro:"A garantia de acertos não é possível pra esse tamanho de jogo."};
+  let tot = 1; for (let i = 0; i < S; i++) tot = tot * (v - i) / (i + 1);
+  if (tot > 30000) return {erro:`Com ${v} números o fecho fica grande demais pra calcular (${Math.round(tot).toLocaleString("pt-BR")} combinações possíveis). Diminui o fecho.`};
+  const r = fechar(v, S, k, m, 4000);
+  const jogos = r.blocos.map(b => U.filter((_, i) => b & (1 << i))).sort((a,b) => a.join().localeCompare(b.join()));
+  const lista = U.map(pad).join(" ");
+  return {jogos, relaxados:0, afrouxados:0, chave:null, notaModo:`Fechamento com ${v} números (${lista}). Garantia: se os ${S} sorteados estiverem todos nesses ${v} números, pelo menos um dos ${jogos.length} jogos faz ${m} acertos ou mais (${r.sorteios.toLocaleString("pt-BR")} combinações conferidas). Se algum sorteado ficar de fora, a garantia não vale. Isso não aumenta a chance de acertar os ${v} números.`};
+}
+
+/* ---------- mais fractais e caos ---------- */
+const FRAC_NOMES = {caos:"Caos (Sierpinski)", barnsley:"Samambaia de Barnsley", logistico:"Mapa logístico", henon:"Atrator de Hénon", pascal:"Triângulo de Pascal mod 9"};
+const FRAC_LISTA = Object.keys(FRAC_NOMES);
+const FRAC_DESC = {
+  barnsley:"Samambaia de Barnsley: jogo do caos com 4 regras (1%, 85%, 7% e 7%); os pontos desenham uma folha, caem numa grade 64×64 e viram dezenas.",
+  logistico:"Mapa logístico x → r·x·(1−x) com r entre 3,9 e 4: caos determinístico; cada passo vira uma dezena.",
+  henon:"Atrator de Hénon (a = 1,4; b = 0,3): mapa caótico em 2D; os pontos caem numa grade 64×64 e viram dezenas.",
+  pascal:"Triângulo de Pascal mod 9: uma janela de uma linha sorteada dá o peso (1 a 9, pelo resto da divisão por 9) de cada dezena."
+};
+function pascalTab(){
+  state._pas = state._pas || (() => { const R = 512, T = [new Uint8Array([1])]; for (let n = 1; n < R; n++){ const a = T[n-1], b = new Uint8Array(n + 1); for (let r = 0; r <= n; r++) b[r] = ((r > 0 ? a[r-1] : 0) + (r < n ? a[r] : 0)) % 9; T.push(b); } return T; })();
+  return state._pas;
+}
+function pascalSorteio(pool, nExtra, cfg, pw){
+  const T = pascalTab(), N = cfg.max - cfg.min + 1, n = (N - 1) + Math.floor(Math.random() * (512 - (N - 1))), c0 = Math.floor(Math.random() * (n - (N - 1) + 1)), linha = T[n];
+  return sorteioPonderado(pool, pool.map(v => (1 + linha[c0 + (v - cfg.min)]) * (pw ? pw.f(v) : 1)), nExtra);
+}
+function fractalSorteio(tipo, pool, nExtra, cfg, pw){
+  if (tipo === "caos") return caosSorteio(pool, nExtra, cfg, pw);
+  if (tipo === "pascal") return pascalSorteio(pool, nExtra, cfg, pw);
+  const N = cfg.max - cfg.min + 1, ok = new Set(pool), usados = new Set(), out = [], cl = z => Math.min(0.9999, Math.max(0, z));
+  let prox;
+  if (tipo === "barnsley"){
+    let x = 0, y = 0;
+    const passo = () => { const r = Math.random();
+      if (r < 0.01){ x = 0; y = 0.16 * y; }
+      else if (r < 0.86){ const a = 0.85 * x + 0.04 * y; y = -0.04 * x + 0.85 * y + 1.6; x = a; }
+      else if (r < 0.93){ const a = 0.2 * x - 0.26 * y; y = 0.23 * x + 0.22 * y + 1.6; x = a; }
+      else { const a = -0.15 * x + 0.28 * y; y = 0.26 * x + 0.24 * y + 0.44; x = a; } };
+    for (let i = 0; i < 30; i++) passo();
+    prox = () => { for (let i = 0; i < 8; i++) passo(); return caosDezena(cl((x + 2.2) / 4.9), cl(y / 10), N); };
+  } else if (tipo === "henon"){
+    let x = Math.random() * 0.2 - 0.1, y = 0;
+    const passo = () => { const nx = 1 - 1.4 * x * x + y; y = 0.3 * x; x = nx; if (!isFinite(x) || Math.abs(x) > 5){ x = Math.random() * 0.2; y = 0; } };
+    for (let i = 0; i < 100; i++) passo();
+    prox = () => { for (let i = 0; i < 3; i++) passo(); return caosDezena(cl((x + 1.3) / 2.6), cl((y + 0.4) / 0.8), N); };
+  } else {
+    const r = 3.9 + Math.random() * 0.099; let x = 0.05 + Math.random() * 0.9;
+    for (let i = 0; i < 50; i++) x = r * x * (1 - x);
+    prox = () => { x = r * x * (1 - x); if (x < 1e-9 || x > 1 - 1e-9) x = 0.05 + Math.random() * 0.9; return Math.min(N - 1, Math.floor((2 / Math.PI) * Math.asin(Math.sqrt(x)) * N)); };
+  }
+  for (let passos = 0; out.length < nExtra && passos < 12000; passos++){
+    const d = cfg.min + prox();
+    if (ok.has(d) && !usados.has(d)){ if (pw && Math.random() * pw.max > pw.f(d)) continue; usados.add(d); out.push(d); }
+  }
+  if (out.length < nExtra){ const resto = pool.filter(v => !usados.has(v)); out.push(...sorteioSimples(resto, nExtra - out.length)); }
+  return out;
+}
+
+/* ---------- Dígitos (raiz digital) ---------- */
+function raizDigital(n){ return n <= 0 ? 0 : 1 + ((n - 1) % 9); }       // soma dos algarismos até sobrar 1 dígito
+function digitosJogo(jogo){
+  const a = jogo.slice().sort((x,y)=>x-y);
+  const soma = a.reduce((t,v)=>t+v,0);                                   // algarismos das dezenas somados == soma das dezenas (mod 9)
+  const d1 = raizDigital(soma), d2 = raizDigital(a[a.length-1] - a[0]);  // intervalos somados == amplitude
+  return {a:d1, b:d2, c:raizDigital(d1 + d2)};
+}
+function digitosAuto(g, hist){
+  state._dig = state._dig || {};
+  const ch = g + "|" + hist[hist.length-1].c; if (state._dig[ch]) return state._dig[ch];
+  const cont = {a:Array(10).fill(0), b:Array(10).fill(0), c:Array(10).fill(0)};
+  hist.forEach(d => { const x = digitosJogo(d.n); cont.a[x.a]++; cont.b[x.b]++; cont.c[x.c]++; });
+  const top = v => new Set([1,2,3,4,5,6,7,8,9].sort((p,q)=>v[q]-v[p]||p-q).slice(0,3));
+  return state._dig[ch] = {a:top(cont.a), b:top(cont.b), c:top(cont.c)};
+}
+
+/* ---------- Fibonacci e razão áurea ---------- */
+function fibSet(cfg){ const f = new Set(), a = [0, 1]; while (a[a.length-1] <= cfg.max) a.push(a[a.length-1] + a[a.length-2]); a.forEach(v => { if (v >= cfg.min && v <= cfg.max && (v > 0 || cfg.min === 0)) f.add(v); }); return f; }
+function fibContagem(jogo, fs){ let c = 0; jogo.forEach(v => { if (fs.has(v)) c++; }); return c; }
+function fibFaixa(g, k, hist){
+  const cfg = GAMES[g], fs = fibSet(cfg), ult = hist[hist.length-1].c, ch = "fib|" + g + "|" + k + "|" + ult;
+  state._fib = state._fib || {}; if (state._fib[ch]) return state._fib[ch];
+  let cont, fonte;
+  if (k === cfg.sorteadas){ const h = hist.slice(-1000); cont = h.map(d => fibContagem(d.n, fs)); fonte = `dos últimos ${h.length} concursos`; }
+  else {
+    const N = cfg.max - cfg.min + 1; cont = []; fonte = `de 3000 jogos simulados de ${k} dezenas`;
+    for (let t = 0; t < 3000; t++){ const p = Array.from({length:N}, (_, i) => cfg.min + i); for (let i = 0; i < k; i++){ const j = i + Math.floor(Math.random() * (N - i)); const x = p[i]; p[i] = p[j]; p[j] = x; } cont.push(fibContagem(p.slice(0, k), fs)); }
+  }
+  return state._fib[ch] = {lo:percentil(cont, 0.10), hi:percentil(cont, 0.90), fonte, lista:[...fs].sort((a,b)=>a-b)};
+}
+function fibSorteio(pool, nExtra){                       // espiral áurea: passos de 1/φ com um tremidinho
+  const N = pool.length, PHI = 0.6180339887498949, usados = new Set(), out = [];
+  let x = Math.random();
+  for (let passos = 0; out.length < nExtra && passos < 2000; passos++){
+    x = (x + PHI + (Math.random() - 0.5) * 0.06 + 1) % 1;
+    let i = Math.floor(x * N); for (let t = 0; t < N && usados.has(i); t++) i = (i + 1) % N;
+    if (!usados.has(i)){ usados.add(i); out.push(pool[i]); }
+  }
+  return out;
+}
+
 /* ---------- construir jogos (usado pelo gerador e pelo backtest) ---------- */
+const MIX_TUDO = {multidao:true, amp:true, fib:true, dig:true, fonte:"sorteia", quentes:true, freq:true, skips:true, grid:true};
 function construir(o){
-  const {g, k, q, modo} = o, cfg = GAMES[g], hist = o.hist || HIST[g].ultimos;
+  if (o.modo === "mix_tudo") o = Object.assign({}, o, {modo:"equilibrado", mix:MIX_TUDO});
+  const {g, k, q, modo} = o, cfg = GAMES[g], hist = o.hist || histEf(g);
+  let avisoSem = "";
+  if (hist.sim){
+    if (["quentes","frequentes","saliu_skips","saliu_grid"].includes(modo)) return {erro:`${cfg.nome} ainda não tem resultados na base, e esse jeito de montar depende dos concursos passados. Toca em “🔄 Atualizar da CAIXA” (ou importa a planilha) e tenta de novo.`};
+    const m0 = o.mix;
+    if (m0 && (m0.quentes || m0.freq || m0.skips || m0.grid)){
+      o = Object.assign({}, o, {mix:Object.assign({}, m0, {quentes:false, freq:false, skips:false, grid:false})});
+      avisoSem = " Sem resultados na base, ficaram de fora: últimos sorteios, mais frequentes, Skips e Wonder Grid (baixa o histórico pra usar).";
+    }
+  }
   const fixSet = o.fix || new Set(), excSet = o.exc || new Set();
-  const sx = (o.semRepetir && k === cfg.sorteadas) ? jaSaiu(g).mapa : null, limite = hist[hist.length-1].c;
+  const sx = (o.semRepetir && k === cfg.sorteadas && !hist.sim) ? jaSaiu(g).mapa : null, limite = hist[hist.length-1].c;
   const fixos = [...fixSet].sort((a,b)=>a-b);
   const pool = [];
   for (let v = cfg.min; v <= cfg.max; v++) if (!fixSet.has(v) && !excSet.has(v)) pool.push(v);
-  let base = fixos, nExtra = k - fixos.length, st = null, sortear, notaModo = "", chave = null;
+  let base = fixos, nExtra = k - fixos.length, st = null, sortear, notaModo = "", chave = null, filtroExtra = null, filtroNiveis = 0, afrouxados = 0;
   if (pool.length < nExtra) return {erro:"Tem número excluído demais: não sobra o suficiente pra montar o jogo."};
 
-  if (modo === "quentes"){
+  if (modo === "fechamento"){ const rf = fechamento(o, cfg, fixos, pool, k); if (!rf.erro && cfg.sorteios === 2) rf.notaModo += " Na Dupla Sena a garantia vale em cada um dos 2 sorteios."; return rf; }
+  const mix = (modo === "equilibrado" && o.mix && Object.values(o.mix).some(Boolean)) ? o.mix : null;
+  if (mix){
+    st = estatisticas(g, k);
+    const partes = ["Equilibrado"], filtros = [], det = [];
+    let cand = pool.slice();
+    if (mix.skips){
+      const sk = saliuSkips(g, hist); let c = cand.filter(v => sk.skips[v] <= sk.mediana);
+      const minimo = Math.min(cand.length, nExtra + 3);
+      if (c.length < minimo){ const resto = cand.filter(v => !c.includes(v)).sort((a,b) => sk.skips[a] - sk.skips[b]); c = c.concat(resto.slice(0, minimo - c.length)); }
+      cand = c; partes.push("Skips");
+    }
+    if (mix.grid){
+      const w = wonderGrid(g, k, excSet, fixSet, hist);
+      if (w.base.length > k) return {erro:"O Wonder Grid usa o número-chave mais os teus fixos: tem fixos demais pra esse tamanho de jogo."};
+      base = w.base; nExtra = k - base.length; let gr = w.grid;
+      if (mix.skips){ const inter = gr.filter(v => cand.includes(v)); if (inter.length >= nExtra + 2) gr = inter; }
+      if (gr.length < nExtra) return {erro:"Tem número excluído demais pro Wonder Grid montar a grade."};
+      cand = gr; chave = w.key; partes.push("Wonder Grid (chave " + pad(w.key) + ")");
+    }
+    if (cand.length < nExtra) return {erro:"Tem número excluído demais: não sobra o suficiente pra montar o jogo."};
+    const p1 = mix.quentes ? pesosQuentes(g, hist) : null, p2 = mix.freq ? pesosFrequentes(g, hist.length) : null;
+    if (p1) partes.push("Últimos sorteios"); if (p2) partes.push("Mais frequentes");
+    const peso = v => (p1 ? p1[v] : 1) * (p2 ? p2[v] : 1), temPeso = !!(p1 || p2);
+    if (mix.fonte){
+      const pw = temPeso ? {f:peso, max:Math.max(...cand.map(peso))} : null;
+      sortear = () => fractalSorteio(mix.fonte === "sorteia" ? FRAC_LISTA[Math.floor(Math.random() * FRAC_LISTA.length)] : mix.fonte, cand, nExtra, cfg, pw);
+      partes.push(mix.fonte === "sorteia" ? "Fractal sorteado a cada jogo" : "Fractal: " + FRAC_NOMES[mix.fonte]);
+    } else if (temPeso) sortear = () => sorteioPonderado(cand, cand.map(peso), nExtra);
+    else sortear = () => sorteioSimples(cand, nExtra);
+    if (mix.multidao){
+      partes.push("Anti-multidão"); filtros.push(jogo => multidaoOk(jogo, g)); det.push("fora dos padrões da multidão");
+    }
+    if (mix.amp){
+      const am = amplitudeFaixa(g, k, hist); partes.push("Amplitudes");
+      filtros.push(jogo => { const x = ampInfo(jogo); return x.amp >= am.aMin && x.amp <= am.aMax && x.maxGap <= am.gMax; });
+      det.push(`amplitude entre ${am.aMin} e ${am.aMax}, maior intervalo até ${am.gMax}`);
+    }
+    if (mix.fib){
+      const fb = fibFaixa(g, k, hist), fs = fibSet(cfg); partes.push("Fibonacci");
+      filtros.push(jogo => { const x = fibContagem(jogo, fs); return x >= fb.lo && x <= fb.hi; });
+      det.push(`${fb.lo} a ${fb.hi} número(s) de Fibonacci`);
+    }
+    if (mix.dig){
+      const dg = o.digitos || digitosAuto(g, hist), L = z => [...z].sort((x,y)=>x-y).join(","); partes.push("Dígitos");
+      filtros.push(jogo => { const x = digitosJogo(jogo); return dg.a.has(x.a) && dg.b.has(x.b) && dg.c.has(x.c); });
+      det.push(`dígitos {${L(dg.a)}} · {${L(dg.b)}} · {${L(dg.c)}}`);
+    }
+    if (filtros.length){ filtroNiveis = filtros.length; filtroExtra = (jogo, nv) => filtros.slice(0, filtros.length - (nv || 0)).every(f => f(jogo)); }
+    notaModo = "Mistura: " + partes.join(" + ") + (det.length ? ". Filtros: " + det.join("; ") : "") + "." + avisoSem;
+  } else if (modo === "quentes"){
     const pm = pesosQuentes(g, hist);
     sortear = () => sorteioPonderado(pool, pool.map(v => pm[v]), nExtra);
   } else if (modo === "frequentes"){
@@ -453,13 +956,38 @@ function construir(o){
     sortear = () => sorteioSimples(w.grid, nExtra);
     notaModo = `Wonder Grid: número-chave ${pad(w.key)} (skip ${w.skips[w.key]}, mediana ${w.mediana}); grade de ${w.grid.length} números que mais saíram junto com ele: ${w.grid.slice().sort((a,b)=>a-b).map(pad).join(" ")}.`;
     chave = w.key;
+  } else if (modo === "fibonacci"){
+    const fb = fibFaixa(g, k, hist), fs = fibSet(cfg);
+    filtroNiveis = 1; filtroExtra = (jogo, nv) => nv >= 1 || (x => x >= fb.lo && x <= fb.hi)(fibContagem(jogo, fs));
+    sortear = () => fibSorteio(pool, nExtra);
+    notaModo = `Fibonacci: dezenas espalhadas pela razão áurea (φ ≈ 1,618) e entre ${fb.lo} e ${fb.hi} número(s) de Fibonacci por jogo (80% centrais ${fb.fonte}; Fibonacci aqui: ${fb.lista.map(pad).join(", ")}).`;
+  } else if (modo === "digitos"){
+    const dg = o.digitos || digitosAuto(g, hist), L = z => [...z].sort((x,y)=>x-y).join(", ");
+    filtroExtra = jogo => { const x = digitosJogo(jogo); return dg.a.has(x.a) && dg.b.has(x.b) && dg.c.has(x.c); };
+    sortear = () => sorteioSimples(pool, nExtra);
+    notaModo = `Dígitos: dezenas {${L(dg.a)}} · intervalos {${L(dg.b)}} · final {${L(dg.c)}}${o.digitos ? " (escolha tua)" : " (automático: os 3 mais frequentes de cada linha no histórico)"}.`;
+  } else if (modo === "antimultidao"){
+    filtroNiveis = 1; filtroExtra = (jogo, nv) => nv >= 1 || multidaoOk(jogo, g);
+    sortear = () => sorteioSimples(pool, nExtra);
+    notaModo = "Anti-multidão: jogos que " + MULT_DESC[g] + ". Não muda a chance de ganhar, só tenta diminuir a chance de dividir o prêmio.";
+  } else if (FRAC_DESC[modo]){
+    sortear = () => fractalSorteio(modo, pool, nExtra, cfg, null);
+    notaModo = FRAC_DESC[modo] + " Nenhum peso por histórico.";
+  } else if (modo === "caos"){
+    sortear = () => caosSorteio(pool, nExtra, cfg);
+    notaModo = "Jogo do Caos: pontos do Triângulo de Sierpinski (vértices (0,0), (1,0) e (0,5; 1)); cada passo sorteia um vértice e anda até a metade; o ponto cai numa grade 64×64 e vira dezena. Nenhum peso por histórico.";
+  } else if (modo === "amplitude"){
+    const am = amplitudeFaixa(g, k, hist);
+    filtroExtra = jogo => { const x = ampInfo(jogo); return x.amp >= am.aMin && x.amp <= am.aMax && x.maxGap <= am.gMax; };
+    sortear = () => sorteioSimples(pool, nExtra);
+    notaModo = `Amplitude e intervalos: amplitude entre ${am.aMin} e ${am.aMax} (80% centrais ${am.fonte}) e maior intervalo entre dezenas vizinhas de até ${am.gMax}.`;
   } else {
     if (modo === "equilibrado") st = estatisticas(g, k);
     sortear = () => sorteioSimples(pool, nExtra);
   }
 
   const vistos = new Set(), jogos = []; let relaxados = 0, tentJogo = 0, tentTotal = 0;
-  const maxTotal = q * 1500 + 5000, limiteMs = o.limiteMs || 1500, t0 = performance.now();
+  const maxTotal = q * 1500 + 5000, limiteMs = o.limiteMs || (mix ? 4000 : 1500), t0 = performance.now();
   while (jogos.length < q && tentTotal < maxTotal){
     tentTotal++; tentJogo++;
     if (tentJogo > 4000) break;                                        // não acha mais jogos diferentes
@@ -472,10 +1000,16 @@ function construir(o){
       if (tentJogo < 2000) continue;      // depois de 2000 recusas aceita (fixos podem forçar um padrão)
       relaxados++;
     }
+    if (filtroExtra){
+      const nv = filtroNiveis ? Math.min(filtroNiveis, Math.floor(tentJogo / 500)) : 0;   // a cada 500 recusas solta o filtro mais apertado (dígitos, depois amplitude)
+      if (!filtroExtra(jogo, nv)){ if (tentJogo < 2000) continue; relaxados++; }
+      else if (nv) afrouxados++;
+    }
     vistos.add(ch); jogos.push(jogo); tentJogo = 0;
   }
   if (!jogos.length) return {erro:"Não consegui montar jogos com essas regras. Tenta tirar alguns números fixos/excluídos."};
-  return {jogos, relaxados, notaModo, chave};
+  const usouSim = hist.sim && (["amplitude","fibonacci","digitos"].includes(modo) || (mix && (mix.amp || mix.fib || mix.dig)));
+  return {jogos, relaxados, afrouxados, notaModo: notaModo + (usouSim ? SIMTXT : ""), chave};
 }
 
 /* ---------- gerar ---------- */
@@ -487,21 +1021,24 @@ function gerar(){
 
   if (!(q >= 1 && q <= 100)) return erro("A quantidade de jogos tem que ficar entre 1 e 100.");
   if (!(k >= cfg.minDez && k <= cfg.maxDez)) return erro(`${cfg.nome}: escolhe de ${cfg.minDez} a ${cfg.maxDez} dezenas por jogo.`);
-  if (state.fix.size > k) return erro(`Tu marcou ${state.fix.size} números fixos, mas cada jogo tem só ${k} dezenas.`);
-  const r = construir({g, k, q, modo, fix:state.fix, exc:state.exc, semRepetir:$("semRep").checked});
+  if (modo !== "fechamento" && state.fix.size > k) return erro(`Tu marcou ${state.fix.size} números fixos, mas cada jogo tem só ${k} dezenas.`);
+  const mix = modo === "equilibrado" ? {multidao:$("mxMult").checked, amp:$("mxAmp").checked, fib:$("mxFib").checked, dig:$("mxDig").checked, fonte:$("mxFrac").value, quentes:$("mxQuentes").checked, freq:$("mxFreq").checked, skips:$("mxSkips").checked, grid:$("mxGrid").checked} : null;
+  const mixOn = !!(mix && Object.values(mix).some(Boolean)), usaDig = modo === "digitos" || (mixOn && mix.dig);
+  if (usaDig && state.digMan && !(state.dig.a.size && state.dig.b.size && state.dig.c.size)) return erro("Nos Dígitos, marca pelo menos 1 dígito em cada linha.");
+  const r = construir({g, k, q, modo, fecV:parseInt($("fecV").value, 10), fecM:parseInt($("fecM").value, 10), mix:mixOn ? mix : null, fix:state.fix, exc:state.exc, semRepetir:$("semRep").checked, digitos:(usaDig && state.digMan) ? state.dig : null});
   if (r.erro) return erro(r.erro);
   erro("");
-  state.jogos = r.jogos; state.k = k; state.modo = modo; state.notaModo = r.notaModo; state.chave = r.chave;
-  mostrar(r.relaxados, q);
+  state.jogos = r.jogos; state.exJ = cfg.extra ? r.jogos.map(() => gerarExtra(g)) : null; state.k = k; state.modo = modo; state.mix = mixOn ? mix : null; state.afrouxados = r.afrouxados || 0; state.notaModo = r.notaModo; state.chave = r.chave;
+  mostrar(r.relaxados, modo === "fechamento" ? r.jogos.length : q);
   return true;
 }
 
 /* ---------- backtest ---------- */
 const MODOS_BT = [
   ["aleatorio","100% aleatório"], ["equilibrado","Equilibrado"], ["quentes","Últimos sorteios"], ["frequentes","Mais frequentes (histórico todo)"],
-  ["saliu_skips","Saliu · Skips"], ["saliu_grid","Saliu · Wonder Grid"]
+  ["saliu_skips","Saliu · Skips"], ["saliu_grid","Saliu · Wonder Grid"], ["amplitude","Amplitude e intervalos"], ["caos","Jogo do Caos (Sierpinski)"], ["digitos","Dígitos (automático)"], ["antimultidao","Anti-multidão"], ["barnsley","Samambaia de Barnsley"], ["logistico","Mapa logístico"], ["henon","Atrator de Hénon"], ["pascal","Pascal mod 9"], ["fibonacci","Fibonacci e razão áurea"], ["mix_tudo","Mistura de todas (no Equilibrado)"]
 ];
-const PREMIO_MIN = {mega:4, lotofacil:11, lotomania:16};   // quadra, 11 pontos, 16 pontos
+const PREMIO_MIN = {mega:4, lotofacil:11, lotomania:16, quina:2, duplasena:3, diadesorte:4, timemania:3, maismilionaria:2};   // quadra, 11 pontos, 16 pontos
 function probAcertos(g, k, minimo){
   const c = GAMES[g], N = c.max - c.min + 1, S = c.sorteadas; let p = 0;
   for (let h = minimo; h <= Math.min(k, S); h++) p += comb(S,h) * comb(N-S, k-h) / comb(N,k);
@@ -512,6 +1049,7 @@ async function rodarBacktest(){
   if (btRodando){ btParar = true; return; }
   const g = state.game, cfg = GAMES[g], hist = HIST[g].ultimos, k = cfg.padrao;
   const q = Math.max(1, Math.min(50, parseInt($("btJogos").value,10) || 20));
+  if (hist.length < 150){ $("btOut").innerHTML = `<div class="err">${cfg.nome} tem só ${hist.length} concursos na base. Pro teste retroativo precisa de pelo menos 150: toca em “🔄 Atualizar da CAIXA” (ou importa a planilha) e volta aqui.</div>`; return; }
   const pedido = parseInt($("btTam").value,10), nTeste = pedido ? Math.min(pedido, hist.length - 100) : hist.length - 1;
   const out = $("btOut"), prog = $("btProg");
   if (nTeste < 20){ out.innerHTML = '<div class="err">Base pequena demais pro teste. Atualize ou importe mais concursos.</div>'; return; }
@@ -573,6 +1111,7 @@ async function rodarBacktest(){
 function mostrar(relaxados, pedidos){
   const g = state.game, cfg = GAMES[g], lista = $("lista");
   lista.innerHTML = "";
+  const px = proximoDe(g); $("alvoInp").value = px.c || ""; $("alvoDat").textContent = px.c ? (px.d ? "em " + px.d : "") : "informe o número do concurso";
   state.jogos.forEach((jogo,i) => {
     const d = document.createElement("div"); d.className = "jogo";
     const top = document.createElement("div"); top.className = "jogo-top";
@@ -582,17 +1121,32 @@ function mostrar(relaxados, pedidos){
     top.appendChild(cp);
     const balls = document.createElement("div"); balls.className = "balls" + (jogo.length > 20 ? " small" : "");
     jogo.forEach(v => { const b = document.createElement("span"); b.className = "ball" + ((state.fix.has(v) || v === state.chave) ? " fixed" : ""); b.dataset.v = v; b.textContent = pad(v); balls.appendChild(b); });
-    d.appendChild(top); d.appendChild(balls); lista.appendChild(d);
+    d.appendChild(top); d.appendChild(balls);
+    const ex = state.exJ && state.exJ[i];
+    if (ex){ const e = document.createElement("div"); e.className = "extra"; e.textContent = ex.rot + ": " + ex.txt; d.appendChild(e); }
+    const mxM = state.modo === "antimultidao" || (state.mix && state.mix.multidao), mxA = state.modo === "amplitude" || (state.mix && state.mix.amp), mxD = state.modo === "digitos" || (state.mix && state.mix.dig), mxF = state.modo === "fibonacci" || (state.mix && state.mix.fib);
+    if (mxM || mxA || mxD || mxF){
+      const x = digitosJogo(jogo), ai = ampInfo(jogo), cap = document.createElement("div"); cap.className = "dgi";
+      cap.textContent = [mxM ? (() => { const x = multidaoInfo(jogo, state.game); return (GAMES[state.game].aniv ? `Até o 31: ${x.ate31} de ${jogo.length} · ` : "") + `maior sequência ${x.run}`; })() : "", mxA ? `Amplitude ${ai.amp} · maior intervalo ${ai.maxGap}` : "", mxD ? `Dígitos: dezenas ${x.a} · intervalos ${x.b} · final ${x.c}` : "", mxF ? (() => { const fs = fibSet(GAMES[state.game]), l = jogo.filter(v => fs.has(v)); return `Fibonacci: ${l.length}${l.length ? " (" + l.map(pad).join(", ") + ")" : ""}`; })() : ""].filter(Boolean).join("   |   ");
+      d.appendChild(cap);
+    }
+    const lb = document.createElement("label"); lb.className = "efet";
+    const ck = document.createElement("input"); ck.type = "checkbox"; ck.dataset.i = i; ck.checked = apostaExiste(i);
+    ck.onchange = () => { if (!alternarAposta(i, ck.checked)) ck.checked = !ck.checked; };
+    lb.appendChild(ck); lb.appendChild(document.createTextNode("Aposta efetivada")); d.appendChild(lb);
+    lista.appendChild(d);
   });
   $("resTitulo").textContent = `${cfg.nome} — ${state.jogos.length} ${state.jogos.length === 1 ? "jogo" : "jogos"} de ${state.k} dezenas`;
   let nota = state.notaModo ? state.notaModo + " " : "";
   if (state.jogos.length < pedidos) nota += `Só deu pra montar ${state.jogos.length} jogos diferentes dos ${pedidos} pedidos com essas regras. `;
-  if (relaxados) nota += `${relaxados} jogo(s) saíram fora do padrão “equilibrado” porque os números fixos não deixavam. `;
+  if (state.afrouxados) nota += `${state.afrouxados} jogo(s) precisaram soltar um filtro (dígitos, Fibonacci ou amplitude) porque a mistura ficou apertada demais pra achar jogo que passasse em todos. `;
+  if (relaxados) nota += `${relaxados} jogo(s) saíram fora de todos os filtros porque os números fixos ou a mistura apertada demais não deixavam. `;
   if (state.fix.size || state.chave != null) nota += "Números fixos e o número-chave aparecem preenchidos.";
   $("notaRes").textContent = nota;
-  const u = HIST[g].ultimos[HIST[g].ultimos.length-1];
-  $("ultimoHint").textContent = `Última da base: concurso ${u.c} (${u.d}). Use “Usar último da base” ou digite o resultado novo.`;
-  $("sorteio").value = ""; limparConferencia();
+  const hh = HIST[g].ultimos, u = hh[hh.length-1];
+  $("ultimoHint").textContent = u ? `Última da base: concurso ${u.c} (${u.d}). Use “Usar último da base” ou digite o resultado novo.` : `${cfg.nome} ainda não tem resultados na base: digite o resultado no campo abaixo.`;
+  $("usarUltimo").disabled = !u;
+  $("sorteio").value = ""; $("sorteio2").value = ""; limparConferencia();
   $("resultado").hidden = false;
   $("resultado").scrollIntoView({behavior:"smooth", block:"start"});
 }
@@ -607,27 +1161,34 @@ function limparConferencia(){
   document.querySelectorAll(".hits").forEach(h => h.textContent = "");
 }
 function conferir(){
-  const set = lerSorteio($("sorteio").value);
+  const cfg = GAMES[state.game], dupla = cfg.sorteios === 2;
+  const s1 = lerSorteio($("sorteio").value), s2 = dupla ? lerSorteio($("sorteio2").value) : new Set();
   limparConferencia();
-  if (!set.size){ toast("Digite as dezenas sorteadas primeiro."); return; }
-  const cfg = GAMES[state.game];
-  document.querySelectorAll(".jogo").forEach((el,i) => {
-    let n = 0;
-    el.querySelectorAll(".ball").forEach(b => { if (set.has(Number(b.dataset.v))){ b.classList.add("hit"); n++; } });
-    el.querySelector(".hits").textContent = n + (n === 1 ? " acerto" : " acertos");
+  if (!s1.size && !s2.size){ toast("Digite as dezenas sorteadas primeiro."); return; }
+  document.querySelectorAll(".jogo").forEach(el => {
+    let n1 = 0, n2 = 0;
+    el.querySelectorAll(".ball").forEach(b => { const v = Number(b.dataset.v), a = s1.has(v), c = s2.has(v); if (a || c) b.classList.add("hit"); if (a) n1++; if (c) n2++; });
+    const f = n => n + (n === 1 ? " acerto" : " acertos");
+    el.querySelector(".hits").textContent = dupla ? `1º: ${f(n1)} · 2º: ${f(n2)}` : f(n1);
   });
   toast("Conferido! Amarelo = acertou.");
 }
 
 /* ---------- exportar ---------- */
-function textoJogos(){ return state.jogos.map((j,i) => `Jogo ${pad(i+1)}: ${j.map(pad).join(" ")}`).join("\n"); }
+function textoJogos(){ return state.jogos.map((j,i) => `Jogo ${pad(i+1)}: ${j.map(pad).join(" ")}` + (state.exJ && state.exJ[i] ? ` — ${state.exJ[i].rot}: ${state.exJ[i].txt}` : "")).join("\n"); }
 function carimbo(){
   const d = new Date(), p = n => String(n).padStart(2,"0");
   state.exportSeq++;
-  return `${p(state.exportSeq)}_${GAMES[state.game].nome.toUpperCase().replace(/[^A-Z]/g,"_")}_PALPITES_${p(d.getDate())}${p(d.getMonth()+1)}${d.getFullYear()}_${p(d.getHours())}${p(d.getMinutes())}`;
+  return `${p(state.exportSeq)}_${GAMES[state.game].nome.toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^A-Z]+/g,"_").replace(/^_+|_+$/g,"")}_PALPITES_${p(d.getDate())}${p(d.getMonth()+1)}${d.getFullYear()}_${p(d.getHours())}${p(d.getMinutes())}`;
 }
 function baixar(nome, conteudo, tipo){
-  const blob = new Blob([conteudo], {type:tipo}), a = document.createElement("a");
+  const blob = (conteudo instanceof Blob) ? conteudo : new Blob([conteudo], {type:tipo});
+  if (window.AndroidArq){                                   // app Android: o sistema pergunta onde salvar
+    const fr = new FileReader();
+    fr.onload = () => window.AndroidArq.salvar(nome, tipo || blob.type || "application/octet-stream", String(fr.result).split(",")[1] || "");
+    fr.readAsDataURL(blob); return;
+  }
+  const a = document.createElement("a");
   a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click();
   setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
 }
@@ -642,14 +1203,15 @@ let tt; function toast(m){ const t = $("toast"); t.textContent = m; t.classList.
 function comb(n,k){ if (k<0||k>n) return 0; k = Math.min(k,n-k); let r = 1; for (let i=1;i<=k;i++) r = r*(n-k+i)/i; return r; }
 function chances(g,k){
   const c = GAMES[g];
-  if (g === "mega") return comb(60,6)/comb(k,6);
-  if (g === "lotofacil") return comb(25,15)/comb(k,15);
-  return comb(100,20)/comb(50,20);
+  if (g === "lotomania") return comb(100,20)/comb(50,20);
+  let n = comb(c.max - c.min + 1, c.sorteadas) / comb(k, c.sorteadas);
+  if (g === "maismilionaria"){ const t = $("exTrev") ? parseInt($("exTrev").value,10) || 2 : 2; n *= comb(6,2) / comb(t,2); }
+  return n;
 }
 function atualizarOdds(){
   const k = parseInt($("dez").value,10), g = state.game, c = GAMES[g];
   if (!(k >= c.minDez && k <= c.maxDez)){ $("odds").textContent = ""; return; }
-  const alvo = g === "lotomania" ? "20 acertos" : `${c.acerto} acertos`;
+  const alvo = g === "lotomania" ? "20 acertos" : g === "maismilionaria" ? "6 números + 2 trevos" : g === "duplasena" ? "6 acertos (em cada um dos 2 sorteios)" : g === "timemania" ? "7 acertos (dentre os 10 escolhidos)" : `${c.acerto} acertos`;
   const n = Math.round(chances(g,k));
   $("odds").textContent = `Chance de ${alvo} em cada jogo: 1 em ${n.toLocaleString("pt-BR")}`;
 }
@@ -659,7 +1221,7 @@ function montarAbas(){
   const t = $("tabs");
   Object.entries(GAMES).forEach(([id,c]) => {
     const b = document.createElement("button"); b.className = "tab"; b.type = "button"; b.role = "tab"; b.dataset.g = id;
-    b.innerHTML = `${c.nome}<small>${c.curto}</small>`;
+    b.innerHTML = `${c.nome}<small>${c.curto}</small><small class="tp"></small>`; b.style.setProperty("--tabc", "#" + c.tab);
     b.onclick = () => trocar(id);
     t.appendChild(b);
   });
@@ -688,8 +1250,29 @@ function pintarGrade(){
   });
   $("nFix").textContent = state.fix.size; $("nExc").textContent = state.exc.size;
 }
+function gerarExtra(g){
+  const c = GAMES[g];
+  if (c.extra === "mes"){ const sel = $("exMes") ? parseInt($("exMes").value,10) : 0; const m = sel >= 1 ? sel : 1 + rint(12); return {rot:c.extraRot, txt:MESES[m-1]}; }
+  if (c.extra === "time"){ const t = $("exTime") ? $("exTime").value.trim() : ""; return {rot:c.extraRot, txt:t || TIMES[rint(TIMES.length)]}; }
+  if (c.extra === "trevos"){ const t = $("exTrev") ? parseInt($("exTrev").value,10) || 2 : 2; return {rot:c.extraRot, txt:"🍀 " + sorteioSimples([1,2,3,4,5,6], t).sort((a,b)=>a-b).join(" ")}; }
+  return null;
+}
+function montarExtras(){
+  const c = GAMES[state.game], box = $("extraBox");
+  box.hidden = !c.extra; box.innerHTML = "";
+  if (!c.extra) return;
+  if (c.extra === "mes")
+    box.innerHTML = `<label class="f" for="exMes">Mês de Sorte</label><select id="exMes" class="sel"><option value="0">🎲 sortear um mês por jogo</option>${MESES.map((m,i) => `<option value="${i+1}">${m}</option>`).join("")}</select><div class="hint">Além das 7 dezenas, o Dia de Sorte tem o mês (1 dentre 12). Vira um prêmio à parte.</div>`;
+  else if (c.extra === "time"){
+    box.innerHTML = `<label class="f" for="exTime">Time do Coração</label><input id="exTime" class="txt" list="timesList" placeholder="vazio = sortear um time por jogo" autocomplete="off"><div class="hint">Escreve o teu time ou deixa vazio pra sortear. A lista de clubes é resumida; confere no volante da lotérica.</div>`;
+    $("timesList").innerHTML = TIMES.map(t => `<option value="${t}">`).join("");
+  } else if (c.extra === "trevos"){
+    box.innerHTML = `<label class="f" for="exTrev">Trevos por jogo</label><select id="exTrev" class="sel">${[2,3,4,5,6].map(t => `<option value="${t}">${t} trevos${t === 2 ? " (aposta simples)" : ""}</option>`).join("")}</select><div class="hint">São 6 trevos e saem 2. Marcar mais trevos custa mais e aumenta a chance de acertar os dois.</div>`;
+    $("exTrev").onchange = atualizarOdds;
+  }
+}
 function trocar(id){
-  state.game = id; state.fix.clear(); state.exc.clear(); state.jogos = [];
+  state.game = id; state.fix.clear(); state.exc.clear(); state.jogos = []; state.exJ = null;
   const c = GAMES[id];
   document.documentElement.dataset.game = id;
   document.querySelectorAll(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.g === id));
@@ -698,7 +1281,7 @@ function trocar(id){
   dez.disabled = fixoDez; $("dezMenos").disabled = fixoDez; $("dezMais").disabled = fixoDez;
   $("dezHint").textContent = fixoDez ? `${c.nome} é sempre ${c.maxDez} dezenas.` : `De ${c.minDez} a ${c.maxDez}. Mais dezenas = aposta mais cara e mais combinações cobertas.`;
   $("erro").hidden = true; $("resultado").hidden = true; if ($("btOut")) { $("btOut").innerHTML = ""; $("btProg").textContent = ""; }
-  montarGrade(); atualizarOdds(); atualizarStatus();
+  montarExtras(); $("sorteio2").hidden = c.sorteios !== 2; montarGrade(); atualizarOdds(); atualizarStatus(); if (typeof renderDig === "function") renderDig(); if (typeof renderFec === "function") renderFec();
 }
 function ajusta(inp, d, mn, mx){
   let v = parseInt(inp.value,10); if (isNaN(v)) v = mn;
@@ -717,13 +1300,151 @@ $("btRodar").onclick = rodarBacktest;
 $("copiarTudo").onclick = () => copiar(textoJogos(), "Todos os jogos copiados!");
 $("baixarTxt").onclick = () => baixar(carimbo() + ".txt", textoJogos() + "\n", "text/plain;charset=utf-8");
 $("baixarCsv").onclick = () => {
-  const k = state.k, cab = ["Jogo"].concat(Array.from({length:k},(_,i)=>"D"+pad(i+1))).join(";");
-  const linhas = state.jogos.map((j,i) => [pad(i+1)].concat(j.map(pad)).join(";"));
+  const k = state.k, temEx = !!(state.exJ && state.exJ[0]), cab = ["Jogo"].concat(Array.from({length:k},(_,i)=>"D"+pad(i+1)), temEx ? [GAMES[state.game].extraRot] : []).join(";");
+  const linhas = state.jogos.map((j,i) => [pad(i+1)].concat(j.map(pad), temEx ? [state.exJ[i].txt] : []).join(";"));
   baixar(carimbo() + ".csv", "﻿" + [cab].concat(linhas).join("\r\n") + "\r\n", "text/csv;charset=utf-8");
 };
+
+/* ---------- painel dos Dígitos ---------- */
+state.digMan = false; state.dig = {a:new Set(), b:new Set(), c:new Set()};
+function renderDig(){
+  const painel = $("digPanel"); if (!painel) return;
+  const modo = document.querySelector("input[name=modo]:checked").value;
+  painel.hidden = !(modo === "digitos" || (modo === "equilibrado" && $("mxDig").checked)); if (painel.hidden) return;
+  const g = state.game;
+  if (!state.digMan){ const au = digitosAuto(g, histEf(g)); state.dig = {a:new Set(au.a), b:new Set(au.b), c:new Set(au.c)}; }
+  ["a","b","c"].forEach(ch => {
+    const box = $("dg" + ch.toUpperCase()); box.innerHTML = "";
+    for (let d = 1; d <= 9; d++){
+      const b = document.createElement("button"); b.type = "button"; b.className = "dg" + (state.dig[ch].has(d) ? " on" : ""); b.textContent = d;
+      b.onclick = () => { state.digMan = true; state.dig[ch].has(d) ? state.dig[ch].delete(d) : state.dig[ch].add(d); renderDig(); };
+      box.appendChild(b);
+    }
+  });
+  $("digTxt").textContent = state.digMan ? "Escolha tua. Toca nos dígitos pra ligar ou desligar." : "Automático: já vêm marcados os 3 dígitos mais frequentes de cada linha no histórico. Toca pra mudar.";
+  $("digAuto").hidden = !state.digMan;
+}
+const FEC_PAD = {mega:{v:10, ms:[4,5], m:4, vmax:18}, lotofacil:{v:18, ms:[11,12,13,14], m:14, vmax:20}, lotomania:{v:10, ms:[], m:1, vmax:20},
+  quina:{v:12, ms:[2,3,4], m:3, vmax:20}, duplasena:{v:10, ms:[3,4,5], m:4, vmax:18}, diadesorte:{v:11, ms:[4,5,6], m:5, vmax:16},
+  timemania:{v:14, ms:[4,5,6], m:5, vmax:16, vmin:11}, maismilionaria:{v:10, ms:[3,4,5], m:4, vmax:18}};
+const FEC_TXT = {
+  quina:"Quina: escolhe o fecho e a garantia (2 = duque, 3 = terno, 4 = quadra). O app mostra quantos jogos precisa; quanto maior o fecho e a garantia, mais jogos.",
+  duplasena:"Dupla Sena: a garantia vale em cada um dos 2 sorteios (3 = terno, 4 = quadra, 5 = quina). Quanto maior o fecho e a garantia, mais jogos.",
+  diadesorte:"Dia de Sorte: o fecho garante acertos só nas 7 dezenas; o Mês de Sorte é sorteado à parte. Quanto maior o fecho e a garantia, mais jogos.",
+  timemania:"Timemania: cada jogo tem 10 números (7 são sorteados). Escolhe um fecho de 11 a 16 números. O Time do Coração é à parte. Quanto maior o fecho e a garantia, mais jogos.",
+  maismilionaria:"+Milionária: o fecho garante acertos só nas 6 dezenas; os trevos são à parte. Quanto maior o fecho e a garantia, mais jogos."
+};
+function renderFec(forcaPadrao){
+  const painel = $("fecPanel"); if (!painel) return;
+  const modo = document.querySelector("input[name=modo]:checked").value; painel.hidden = modo !== "fechamento";
+  const g = state.game, d = FEC_PAD[g];
+  if (forcaPadrao || state._fecJogo !== g){
+    state._fecJogo = g; $("fecV").value = d.v; $("fecV").max = d.vmax || 20; $("fecV").min = d.vmin || 7;
+    $("fecM").innerHTML = d.ms.map(x => `<option value="${x}"${x === d.m ? " selected" : ""}>${x} acertos</option>`).join("");
+  }
+  if (FEC_TXT[g]) $("fecTxt").textContent = FEC_TXT[g]; else
+  $("fecTxt").textContent = g === "lotomania" ? "O fechamento não serve pra Lotomania. Escolhe Mega-Sena ou Lotofácil." : g === "mega" ? "Mega-Sena: com 10 números e garantia de 4 acertos (quadra), bastam uns 3 jogos; com garantia de 5 (quina), uns 15. Quanto maior o fecho e a garantia, mais jogos." : "Lotofácil: com 18 números e 14 acertos garantidos, uns 31 jogos; com 13 garantidos, uns 6. Quanto maior o fecho e a garantia, mais jogos.";
+}
+function renderMix(){ $("mixPanel").hidden = document.querySelector("input[name=modo]:checked").value !== "equilibrado"; }
+document.querySelectorAll("input[name=modo]").forEach(r => r.addEventListener("change", () => { renderMix(); renderDig(); renderFec(); }));
+$("mxDig").addEventListener("change", renderDig);
+$("mxTodas").onclick = () => { document.querySelectorAll("#mixPanel input[type=checkbox]").forEach(c => c.checked = true); $("mxFrac").value = "sorteia"; renderDig(); };
+$("mxNenhuma").onclick = () => { document.querySelectorAll("#mixPanel input[type=checkbox]").forEach(c => c.checked = false); $("mxFrac").value = ""; renderDig(); };
+renderMix(); renderFec(true);
+$("digAuto").onclick = () => { state.digMan = false; renderDig(); };
+
+/* ---------- exportar .xlsx (gerado aqui mesmo, sem biblioteca) ---------- */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); t[n] = c >>> 0; } return t; })();
+const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+function crc32(u8){ let c = 0xFFFFFFFF; for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zipSemCompressao(arquivos){
+  const enc = new TextEncoder(), u16 = v => [v & 255, (v >>> 8) & 255], u32 = v => [v & 255, (v >>> 8) & 255, (v >>> 16) & 255, (v >>> 24) & 255];
+  const partes = [], central = []; let off = 0;
+  arquivos.forEach(f => {
+    const nome = enc.encode(f.nome), dados = enc.encode(f.texto), crc = crc32(dados), tam = dados.length;
+    const lh = Uint8Array.from([0x50,0x4b,3,4, ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(tam), ...u32(tam), ...u16(nome.length), ...u16(0)]);
+    partes.push(lh, nome, dados);
+    central.push(Uint8Array.from([0x50,0x4b,1,2, ...u16(20), ...u16(20), ...u16(0x0800), ...u16(0), ...u16(0), ...u16(0x21), ...u32(crc), ...u32(tam), ...u32(tam), ...u16(nome.length), ...u16(0), ...u16(0), ...u16(0), ...u16(0), ...u32(0), ...u32(off)]), nome);
+    off += lh.length + nome.length + dados.length;
+  });
+  let cdTam = 0; central.forEach(c => cdTam += c.length);
+  const fim = Uint8Array.from([0x50,0x4b,5,6, ...u16(0), ...u16(0), ...u16(arquivos.length), ...u16(arquivos.length), ...u32(cdTam), ...u32(off), ...u16(0)]);
+  return new Blob(partes.concat(central, [fim]), {type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+}
+const xe = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function colL(n){ let r = ""; while (n > 0){ const m = (n - 1) % 26; r = String.fromCharCode(65 + m) + r; n = Math.floor((n - 1) / 26); } return r; }
+function gerarXlsx(){
+  const g = state.game, cfg = GAMES[g], k = state.k, S = cfg.sorteadas, n = state.jogos.length;
+  const COR = cfg.cor || "1F9D6B";
+  const NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  const cs = (r, c, t, st) => `<c r="${colL(c)}${r}" s="${st}" t="inlineStr"><is><t xml:space="preserve">${xe(t)}</t></is></c>`;
+  const cn = (r, c, v, st) => `<c r="${colL(c)}${r}" s="${st}"><v>${v}</v></c>`;
+  const cf = (r, c, f, st) => `<c r="${colL(c)}${r}" s="${st}"><f>${xe(f)}</f></c>`;
+  const cv = (r, c, st) => `<c r="${colL(c)}${r}" s="${st}"/>`;
+  const D2 = cfg.sorteios === 2, L1 = 2, LD = 1 + k, CA = 2 + k, CB = D2 ? 3 + k : 0, CF = 3 + k + (D2 ? 1 : 0), CX = CF + 1, EXT = !!cfg.extra, RI = 4, RI2 = 5, RH = 6, R0 = 7, RL = R0 + n - 1, UC = EXT ? CX : CF;
+  const SORT = `$B$${RI}:$${colL(1 + S)}$${RI}`, SORT2 = `$B$${RI2}:$${colL(1 + S)}$${RI2}`;
+  const d = new Date(), p = v => String(v).padStart(2,"0"), quando = `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+  // ----- aba 1: Palpites -----
+  let rows = "";
+  rows += `<row r="1" ht="24" customHeight="1">${cs(1,1,`${cfg.nome} — ${n} ${n === 1 ? "jogo" : "jogos"} de ${k} dezenas`,1)}</row>`;
+  rows += `<row r="2">${cs(2,1,"Para conferir: digite as dezenas sorteadas nas células amarelas. Os acertos e os números acertados (em amarelo) são marcados sozinhos.",2)}</row>`;
+  let ri = cs(RI,1,D2 ? "Resultado do 1º sorteio →" : "Resultado sorteado →",6); for (let i = 0; i < S; i++) ri += cv(RI, 2 + i, 5);
+  rows += `<row r="${RI}" ht="22" customHeight="1">${ri}</row>`;
+  if (D2){ let r2x = cs(RI2,1,"Resultado do 2º sorteio →",6); for (let i = 0; i < S; i++) r2x += cv(RI2, 2 + i, 5); rows += `<row r="${RI2}" ht="22" customHeight="1">${r2x}</row>`; }
+  let hd = cs(RH,1,"Jogo",3); for (let i = 1; i <= k; i++) hd += cs(RH, 1 + i, "D" + p(i), 3); hd += cs(RH, CA, D2 ? "Acertos 1º" : "Acertos", 3) + (D2 ? cs(RH, CB, "Acertos 2º", 3) : "") + cs(RH, CF, "Faixa", 3) + (EXT ? cs(RH, CX, cfg.extraRot, 3) : "");
+  rows += `<row r="${RH}" ht="20" customHeight="1">${hd}</row>`;
+  state.jogos.forEach((j, i) => {
+    const r = R0 + i, A = colL(CA) + r;
+    let linha = cs(r, 1, "Jogo " + p(i + 1), 7);
+    j.forEach((v, c) => linha += cn(r, 2 + c, v, 4));
+    linha += cf(r, CA, `IF(COUNT(${SORT})=0,"",SUMPRODUCT(--(COUNTIF(${SORT},B${r}:${colL(LD)}${r})>0)))`, 8);
+    if (D2) linha += cf(r, CB, `IF(COUNT(${SORT2})=0,"",SUMPRODUCT(--(COUNTIF(${SORT2},B${r}:${colL(LD)}${r})>0)))`, 8);
+    const a1 = colL(CA) + r, a2 = D2 ? colL(CB) + r : null;
+    const V = D2 ? `MAX(${a1},${a2})` : a1, vazio = D2 ? `AND(${a1}="",${a2}="")` : `${a1}=""`;
+    const tier = g === "mega" ? `IF(${V}=6,"SENA",IF(${V}=5,"QUINA",IF(${V}=4,"QUADRA","")))`
+      : g === "quina" ? `IF(${V}=5,"QUINA",IF(${V}=4,"QUADRA",IF(${V}=3,"TERNO",IF(${V}=2,"DUQUE",""))))`
+      : g === "duplasena" ? `IF(${V}=6,"SENA",IF(${V}=5,"QUINA",IF(${V}=4,"QUADRA",IF(${V}=3,"TERNO",""))))`
+      : g === "lotofacil" ? `IF(${V}>=11,${V}&" pontos","")`
+      : g === "lotomania" ? `IF(OR(${V}>=16,${V}=0),${V}&" pontos","")`
+      : `IF(${V}>=${PREMIO_MIN[g]},${V}&" acertos","")`;
+    linha += cf(r, CF, `IF(${vazio},"",${tier})`, 9);
+    if (EXT) linha += cs(r, CX, (state.exJ && state.exJ[r - R0]) ? state.exJ[r - R0].txt : "", 7);
+    rows += `<row r="${r}" ht="19" customHeight="1">${linha}</row>`;
+  });
+  const cols = `<cols><col min="1" max="1" width="22" customWidth="1"/><col min="2" max="${LD}" width="5.7" customWidth="1"/><col min="${CA}" max="${CA}" width="10" customWidth="1"/><col min="${CF}" max="${CF}" width="16" customWidth="1"/>${D2 ? `<col min="${CB}" max="${CB}" width="10" customWidth="1"/>` : ""}${EXT ? `<col min="${CX}" max="${CX}" width="26" customWidth="1"/>` : ""}</cols>`;
+  const sheet1 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><sheetPr><pageSetUpPr fitToPage="1"/></sheetPr><dimension ref="A1:${colL(UC)}${RL}"/><sheetViews><sheetView workbookViewId="0" showGridLines="0"><pane ySplit="${RH}" topLeftCell="A${R0}" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="15"/>${cols}<sheetData>${rows}</sheetData><conditionalFormatting sqref="B${R0}:${colL(LD)}${RL}"><cfRule type="expression" dxfId="0" priority="1"><formula>${xe(`COUNTIF(${SORT},B${R0})>0`)}</formula></cfRule>${D2 ? `<cfRule type="expression" dxfId="0" priority="2"><formula>${xe(`COUNTIF(${SORT2},B${R0})>0`)}</formula></cfRule>` : ""}</conditionalFormatting><pageMargins left="0.5" right="0.5" top="0.6" bottom="0.6" header="0.3" footer="0.3"/><pageSetup paperSize="9" orientation="landscape" fitToWidth="1" fitToHeight="0"/></worksheet>`;
+  // ----- aba 2: Parâmetros -----
+  let modoTxt = state.modo || "";
+  try { const m = document.querySelector('input[name="modo"]:checked'); if (m) modoTxt = m.closest("label").querySelector("b").textContent.trim(); } catch(e){}
+  const ult = HIST[g].ultimos.slice(-1)[0], listaNum = set => [...set].sort((a, b) => a - b).map(pad).join(" ") || "nenhum";
+  const info = [["Jogo", cfg.nome + " (" + cfg.desc + ")"], ["Gerado em", quando], ["Quantidade de jogos", String(n)], ["Dezenas por jogo", String(k)],
+    ["Como os jogos foram montados", modoTxt], ["Detalhe do método", state.notaModo || "—"], ["Números fixos", listaNum(state.fix)], ["Números excluídos", listaNum(state.exc)],
+    ["Última da base usada", ult ? `concurso ${ult.c} (${ult.d})` : "—"], ["Chance do prêmio máximo por jogo", "1 em " + Math.round(chances(g, k)).toLocaleString("pt-BR")],
+    ["Aviso", "Ferramenta de estudo. Loteria é jogo de azar: nenhuma estratégia aumenta a chance de ganhar. Jogue com responsabilidade."]];
+  let r2 = `<row r="1" ht="24" customHeight="1">${cs(1,1,"Parâmetros do palpite",1)}</row>`;
+  info.forEach((x, i) => r2 += `<row r="${3 + i}">${cs(3 + i, 1, x[0], 11)}${cs(3 + i, 2, x[1], 10)}</row>`);
+  const sheet2 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><sheetViews><sheetView workbookViewId="0" showGridLines="0"/></sheetViews><sheetFormatPr defaultRowHeight="15"/><cols><col min="1" max="1" width="34" customWidth="1"/><col min="2" max="2" width="90" customWidth="1"/></cols><sheetData>${r2}</sheetData><pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/></worksheet>`;
+  // ----- estilos e pacote -----
+  const bd = '<border><left style="thin"><color rgb="FFBFC8C2"/></left><right style="thin"><color rgb="FFBFC8C2"/></right><top style="thin"><color rgb="FFBFC8C2"/></top><bottom style="thin"><color rgb="FFBFC8C2"/></bottom><diagonal/></border>';
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ${NS}><numFmts count="1"><numFmt numFmtId="164" formatCode="00"/></numFmts><fonts count="5"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="15"/><color rgb="FF1D2A24"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><i/><sz val="10"/><color rgb="FF66736C"/><name val="Calibri"/></font></fonts><fills count="4"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FFFFF2B3"/><bgColor indexed="64"/></patternFill></fill><fill><patternFill patternType="solid"><fgColor rgb="FF${COR}"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="2"><border><left/><right/><top/><bottom/><diagonal/></border>${bd}</borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="12"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="4" fillId="0" borderId="0" xfId="0" applyFont="1"/><xf numFmtId="0" fontId="3" fillId="3" borderId="1" xfId="0" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="164" fontId="1" fillId="2" borderId="1" xfId="0" applyNumberFormat="1" applyFont="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1" applyAlignment="1"><alignment vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment horizontal="left" vertical="center"/></xf><xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf><xf numFmtId="0" fontId="1" fillId="0" borderId="1" xfId="0" applyFont="1" applyBorder="1" applyAlignment="1"><alignment vertical="top" wrapText="1"/></xf></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles><dxfs count="1"><dxf><font><b/><color rgb="FF2B2200"/></font><fill><patternFill patternType="solid"><fgColor rgb="FFF2B705"/><bgColor rgb="FFF2B705"/></patternFill></fill></dxf></dxfs></styleSheet>`;
+  const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships", PK = "http://schemas.openxmlformats.org/package/2006/relationships";
+  const arq = [
+    {nome:"[Content_Types].xml", texto:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
+    {nome:"_rels/.rels", texto:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+    {nome:"xl/workbook.xml", texto:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook ${NS} xmlns:r="${R}"><bookViews><workbookView/></bookViews><sheets><sheet name="Palpites" sheetId="1" r:id="rId1"/><sheet name="Parâmetros" sheetId="2" r:id="rId2"/></sheets><calcPr calcId="191029" fullCalcOnLoad="1"/></workbook>`},
+    {nome:"xl/_rels/workbook.xml.rels", texto:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="${R}/styles" Target="styles.xml"/></Relationships>`},
+    {nome:"xl/styles.xml", texto:styles}, {nome:"xl/worksheets/sheet1.xml", texto:sheet1}, {nome:"xl/worksheets/sheet2.xml", texto:sheet2}
+  ];
+  return zipSemCompressao(arq);
+}
+$("baixarXlsx").onclick = () => {
+  if (!state.jogos.length){ toast("Gere os palpites primeiro."); return; }
+  baixar(carimbo() + ".xlsx", gerarXlsx(), XLSX_MIME);
+};
+
 $("imprimir").onclick = () => window.print();
 $("conferir").onclick = conferir;
-$("usarUltimo").onclick = () => { const u = HIST[state.game].ultimos.slice(-1)[0]; $("sorteio").value = u.n.map(pad).join(" "); conferir(); };
+$("usarUltimo").onclick = () => { const u = HIST[state.game].ultimos.slice(-1)[0]; if (!u){ toast("Ainda não tem resultado na base."); return; } $("sorteio").value = u.n.map(pad).join(" "); $("sorteio2").value = (u.n2 || []).map(pad).join(" "); conferir(); };
 $("tema").onclick = () => {
   const r = document.documentElement, escuro = getComputedStyle(r).getPropertyValue("--bg").trim() === "#121816";
   r.dataset.theme = escuro ? "light" : "dark";
@@ -732,12 +1453,14 @@ $("tema").onclick = () => {
 
 /* ---------- base de resultados: atualizar da CAIXA / importar planilha ---------- */
 const LS_KEY = "palpites_base_v1";
-const API = {mega:"megasena", lotofacil:"lotofacil", lotomania:"lotomania"};
-const meta = {quando:null};
+const API = {mega:"megasena", lotofacil:"lotofacil", lotomania:"lotomania", quina:"quina", duplasena:"duplasena", diadesorte:"diadesorte", timemania:"timemania", maismilionaria:"maismilionaria"};
+const meta = {quando:null, prox:{}};
 function valido(g,d){
   const c = GAMES[g];
-  return d && Number.isFinite(d.c) && d.c > 0 && Array.isArray(d.n) && d.n.length === c.sorteadas &&
-         new Set(d.n).size === d.n.length && d.n.every(v => Number.isInteger(v) && v >= c.min && v <= c.max);
+  const ok = n => Array.isArray(n) && n.length === c.sorteadas && new Set(n).size === n.length && n.every(v => Number.isInteger(v) && v >= c.min && v <= c.max);
+  if (!(d && Number.isFinite(d.c) && d.c > 0 && ok(d.n))) return false;
+  if (d.n2 !== undefined && !ok(d.n2)) delete d.n2;
+  return true;
 }
 function mesclar(g, draws){
   const m = new Map(); HIST[g].ultimos.forEach(d => m.set(d.c, d));
@@ -746,10 +1469,10 @@ function mesclar(g, draws){
   HIST[g].ultimos = [...m.values()].sort((a,b) => a.c - b.c);
   return novos;
 }
-const BASE_MAX = {}; Object.keys(HIST).forEach(g => BASE_MAX[g] = HIST[g].ultimos[HIST[g].ultimos.length-1].c);
+const BASE_MAX = {}; Object.keys(HIST).forEach(g => BASE_MAX[g] = HIST[g].ultimos.length ? HIST[g].ultimos[HIST[g].ultimos.length-1].c : 0);
 function salvarBase(){
   try {
-    const o = {q:meta.quando};
+    const o = {q:meta.quando, prox:meta.prox};
     Object.keys(GAMES).forEach(g => o[g] = HIST[g].ultimos.filter(d => d.c > BASE_MAX[g]));   // só o que não veio embutido
     localStorage.setItem(LS_KEY, JSON.stringify(o));
   } catch(e){}
@@ -757,80 +1480,158 @@ function salvarBase(){
 function carregarBase(){
   try {
     const s = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-    if (s){ meta.quando = s.q || null; Object.keys(GAMES).forEach(g => mesclar(g, s[g] || [])); }
+    if (s){ meta.quando = s.q || null; meta.prox = s.prox || {}; Object.keys(GAMES).forEach(g => mesclar(g, s[g] || [])); }
   } catch(e){}
 }
 function agoraTxt(){ const d = new Date(), p = n => String(n).padStart(2,"0"); return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`; }
 function atualizarSemRep(){
   const g = state.game, c = GAMES[g], k = parseInt($("dez").value,10), box = $("semRep"), j = jaSaiu(g);
-  const aplica = k === c.sorteadas;
+  const aplica = k === c.sorteadas && j.n > 0;
   box.disabled = !aplica; box.closest(".semrep").classList.toggle("off", !aplica);
-  $("semRepHint").textContent = aplica
+  $("semRepHint").textContent = j.n === 0 ? "Sem resultados na base ainda: baixa o histórico pra poder evitar combinações já sorteadas." : aplica
     ? `Na base: ${j.n} concursos e ${j.repetidas === 0 ? "nenhuma combinação repetida" : j.repetidas + " combinação(ões) repetida(s)"}.`
     : `Só vale pra jogos de ${c.sorteadas} dezenas (o mesmo tamanho do sorteio).`;
 }
 function atualizarStatus(){
-  const g = state.game, u = HIST[g].ultimos[HIST[g].ultimos.length-1];
-  $("baseTxt").textContent = `Base ${GAMES[g].nome}: ${HIST[g].ultimos.length} concursos, último ${u.c} (${u.d})` + (meta.quando ? ` · atualizada em ${meta.quando}` : "");
+  const g = state.game, hh = HIST[g].ultimos, u = hh[hh.length-1];
+  $("baseTxt").textContent = u ? `Base ${GAMES[g].nome}: ${hh.length.toLocaleString("pt-BR")} concursos, último ${u.c} (${u.d})` + (meta.quando ? ` · atualizada em ${meta.quando}` : "")
+    : `Base ${GAMES[g].nome}: vazia. Toca em “🔄 Atualizar da CAIXA” pra baixar todos os resultados (ou importa a planilha). Sem histórico, as estratégias que dependem dele ficam desligadas; o resto funciona normal.`;
+  $("btnTodas").hidden = !Object.keys(GAMES).some(x => !HIST[x].ultimos.length);
   atualizarSemRep();
-  if (!$("resultado").hidden) $("ultimoHint").textContent = `Última da base: concurso ${u.c} (${u.d}). Use “Usar último da base” ou digite o resultado novo.`;
+  if (!$("resultado").hidden) $("ultimoHint").textContent = u ? `Última da base: concurso ${u.c} (${u.d}). Use “Usar último da base” ou digite o resultado novo.` : `${GAMES[g].nome} ainda não tem resultados na base: digite o resultado no campo abaixo.`;
 }
 let msgUsuario = false;
 function setMsg(m){ $("baseMsg").textContent = m; }
 
-async function getJson(url){
-  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), 12000);
+async function getJson(url, ms){
+  const ctrl = new AbortController(), t = setTimeout(() => ctrl.abort(), ms || 12000);
   try {
     const r = await fetch(url, {headers:{Accept:"application/json"}, signal:ctrl.signal});
     if (!r.ok) throw new Error("HTTP " + r.status);
     return await r.json();
   } finally { clearTimeout(t); }
 }
-function sorteioDaApi(j){
+function sorteioDaApi(j, g){
   // aceita o formato da loteriascaixa-api (concurso/data/dezenas) e o da CAIXA (numero/dataApuracao/listaDezenas)
-  const lista = j.dezenas || j.listaDezenas || [];
-  return {c:Number(j.concurso ?? j.numero), d:String(j.data ?? j.dataApuracao ?? ""), n:lista.map(Number).sort((a,b)=>a-b)};
+  const cfg = GAMES[g], S = cfg.sorteadas;
+  let a = (j.dezenas || j.listaDezenas || []).map(Number), n2 = null;
+  if (cfg.sorteios === 2){                                   // Dupla Sena: o 2º sorteio vem em campo próprio ou colado na mesma lista
+    const k2 = Object.keys(j).find(k => /segund|sorteio2|dezenas2|2sorteio/i.test(k) && Array.isArray(j[k]) && j[k].length === S);
+    if (k2) n2 = j[k2].map(Number);
+    else if (a.length === 2 * S){ n2 = a.slice(S); a = a.slice(0, S); }
+  }
+  if (a.length > S) a = a.slice(0, S);                       // alguma fonte cola trevos/mês no fim da lista
+  const o = {c:Number(j.concurso ?? j.numero), d:String(j.data ?? j.dataApuracao ?? ""), n:a.sort((x,y)=>x-y)};
+  if (n2) o.n2 = n2.sort((x,y)=>x-y);
+  return o;
 }
+const B1 = "https://loteriascaixa-api.herokuapp.com/api/", B2 = "https://servicebus2.caixa.gov.br/portaldeloterias/api/", B3 = "https://api.guidi.dev.br/loteria/";
 const FONTES = [
-  {nome:"loteriascaixa-api", url:g => "https://loteriascaixa-api.herokuapp.com/api/" + API[g]},
-  {nome:"CAIXA",             url:g => "https://servicebus2.caixa.gov.br/portaldeloterias/api/" + API[g]}
+  {nome:"loteriascaixa-api", latest:g => B1 + API[g] + "/latest", um:(g,c) => B1 + API[g] + "/" + c, todos:g => B1 + API[g]},
+  {nome:"CAIXA",             latest:g => B2 + API[g],             um:(g,c) => B2 + API[g] + "/" + c, todos:null},
+  {nome:"api.guidi.dev.br",  latest:g => B3 + API[g] + "/ultimo", um:(g,c) => B3 + API[g] + "/" + c, todos:null}
 ];
-async function atualizarJogo(g){
+const fmt = n => Number(n).toLocaleString("pt-BR");
+const pausa = ms => new Promise(r => setTimeout(r, ms));
+let atualizando = false, pararAtu = false, atuUsuario = false;
+async function buscarUm(f, g, c){
+  for (let t = 0; t < 3; t++){
+    try { const d = sorteioDaApi(await getJson(f.um(g, c)), g); if (valido(g, d) && d.c === c) return d; } catch(e){}
+    if (pararAtu) return null;
+    await pausa(250 * (t + 1));
+  }
+  return null;
+}
+async function atualizarJogo(g, o){
+  o = o || {};
   let base = null, ult = null;
   for (const f of FONTES){
     try {
-      const u = sorteioDaApi(await getJson(f.url(g) + (f.nome === "CAIXA" ? "" : "/latest")));
-      if (valido(g, u)){ base = f; ult = u; break; }
+      const j = await getJson(f.latest(g)), u = sorteioDaApi(j, g);
+      if (valido(g, u)){
+        base = f; ult = u;
+        const pc = Number(j.proximoConcurso ?? j.numeroConcursoProximo ?? j.numeroConcursoFinal_0_5), pd = dataBr(j.dataProximoConcurso ?? "");
+        if (Number.isInteger(pc) && pc > u.c) meta.prox[g] = {c:pc, d:pd};
+        break;
+      }
     } catch(e){}
   }
   if (!base) throw new Error("nenhuma fonte respondeu");
-  const conhecido = HIST[g].ultimos[HIST[g].ultimos.length-1].c;
-  if (ult.c <= conhecido) return {novos:0, fonte:base.nome};
-  const faltam = []; for (let c = Math.max(conhecido + 1, ult.c - 299); c < ult.c; c++) faltam.push(c);
-  const draws = [ult];
-  for (let i = 0; i < faltam.length; i += 8){
-    const lote = await Promise.all(faltam.slice(i, i+8).map(c => getJson(base.url(g) + "/" + c).then(sorteioDaApi).catch(() => null)));
-    lote.forEach(d => d && draws.push(d));
+  const hh = HIST[g].ultimos, conhecido = hh.length ? hh[hh.length-1].c : 0;
+  if (hh.length && ult.c <= conhecido) return {novos:0, fonte:base.nome};
+  const tem = new Set(hh.map(d => d.c)), primeiro = hh.length >= 1000 ? hh[0].c : 1;
+  let faltam = []; for (let c = primeiro; c <= ult.c; c++) if (!tem.has(c) && c !== ult.c) faltam.push(c);
+  if (o.silencioso && faltam.length > 300) return {novos:0, fonte:base.nome, pendente:faltam.length + 1};
+  const tudo = new Map(); tudo.set(ult.c, ult);
+  const progresso = (feitos, total, txt) => { if (o.prog) o.prog(feitos, total, txt); };
+  // 1) tenta a lista completa de uma vez (rápido); 2) o que faltar vem concurso por concurso
+  if (faltam.length > 40 && base.todos){
+    progresso(0, faltam.length, "baixando a lista completa");
+    try {
+      const j = await getJson(base.todos(g), 120000), lista = Array.isArray(j) ? j : (j && (j.data || j.resultados || j.results));
+      if (Array.isArray(lista)) lista.forEach(x => { try { const d = sorteioDaApi(x, g); if (valido(g, d) && !tem.has(d.c)) tudo.set(d.c, d); } catch(e){} });
+    } catch(e){}
+    faltam = faltam.filter(c => !tudo.has(c));
   }
-  return {novos:mesclar(g, draws), fonte:base.nome};
+  const total0 = faltam.length, LOTE = 10;
+  let feitos = 0, ruins = 0, parou = false, lotes = 0;
+  const guardar = completo => {
+    const corte = faltam.find(c => !tudo.has(c));          // só guarda o trecho sem buraco (assim dá pra continuar de onde parou)
+    const lista = [...tudo.values()].filter(d => completo || corte === undefined || d.c < corte);
+    return mesclar(g, lista);
+  };
+  let novos = 0;
+  for (let i = 0; i < faltam.length; i += LOTE){
+    if (pararAtu){ parou = true; break; }
+    const lote = faltam.slice(i, i + LOTE);
+    const rs = await Promise.all(lote.map(c => buscarUm(base, g, c)));
+    let boas = 0; rs.forEach(d => { if (d){ tudo.set(d.c, d); boas++; } });
+    feitos += lote.length; lotes++;
+    ruins = boas === 0 ? ruins + 1 : 0;
+    progresso(feitos, total0);
+    if (ruins >= 3){ parou = true; break; }
+    if (lotes % 20 === 0){ novos += guardar(false); salvarBase(); if (g === state.game) atualizarStatus(); }
+  }
+  const sobrou = faltam.filter(c => !tudo.has(c)).length;
+  novos += guardar(sobrou === 0);
+  return {novos, fonte:base.nome, faltam:sobrou, parou};
 }
-async function atualizarTodos(silencioso){
-  const bt = $("btnAtualizar"); bt.disabled = true;
-  if (!silencioso){ msgUsuario = true; setMsg("Buscando resultados online…"); }
-  const res = [];
-  for (const g of Object.keys(GAMES)){
-    try { const r = await atualizarJogo(g); res.push({g, novos:r.novos, fonte:r.fonte}); } catch(e){ res.push({g, erro:true}); }
+async function atualizarTodos(silencioso, opc){
+  opc = opc || {};
+  if (atualizando){
+    if (atuUsuario){ pararAtu = true; setMsg("Parando… (o que já baixou fica guardado)"); }
+    else setMsg("Já tô conferindo a CAIXA, um instantinho…");
+    return;
   }
-  bt.disabled = false;
+  atualizando = true; pararAtu = false; atuUsuario = !silencioso;
+  const bt = $("btnAtualizar"), txt0 = bt.textContent;
+  if (!silencioso){ bt.textContent = "⏹ Parar"; $("btnTodas").disabled = true; msgUsuario = true; setMsg("Buscando resultados online…"); }
+  const ordem = Object.keys(GAMES).filter(g => opc.todas || (!silencioso && g === state.game) || HIST[g].ultimos.length > 0)
+                .sort((a, b) => (b === state.game) - (a === state.game));
+  const res = [];
+  for (const g of ordem){
+    if (pararAtu) break;
+    try {
+      const r = await atualizarJogo(g, {silencioso, prog:(f, t, txt) => { if (!silencioso) setMsg(`${GAMES[g].nome}: ${txt ? txt + "…" : `baixando ${fmt(f)} de ${fmt(t)} concursos…`} (toca em “Parar” se quiser interromper)`); }});
+      res.push({g, novos:r.novos, fonte:r.fonte, faltam:r.faltam || 0, pendente:r.pendente || 0, parou:!!r.parou});
+    } catch(e){ res.push({g, erro:true}); }
+    if (g === state.game) atualizarStatus();
+  }
+  atualizando = false; bt.textContent = txt0; $("btnTodas").disabled = false;
+  atualizarAbas(); salvarBase(); anunciarConferencia(conferirApostas());
   const ok = res.filter(r => !r.erro), falhou = res.filter(r => r.erro);
   if (ok.length){ meta.quando = agoraTxt(); salvarBase(); }
   atualizarStatus();
   if (silencioso && msgUsuario) return;   // não atropela a mensagem de uma ação do usuário
   if (!ok.length){
+    if (silencioso && !res.length) return;
     setMsg("Não consegui buscar os resultados online (o navegador costuma bloquear isso em arquivo local). Use “Importar planilha” com o arquivo baixado do site da CAIXA.");
   } else {
-    const novos = ok.reduce((a,r) => a + r.novos, 0);
-    setMsg((novos ? `Pronto! ${novos} concurso(s) novo(s) no total.` : "Tudo em dia, nenhum concurso novo.") + ` (fonte: ${[...new Set(ok.map(r => r.fonte))].join(" / ")}).` +
+    const novos = ok.reduce((a,r) => a + r.novos, 0), det = ok.filter(r => r.novos > 0).map(r => `${GAMES[r.g].nome} +${fmt(r.novos)}`).join(", ");
+    const parc = ok.filter(r => r.faltam > 0), pend = ok.filter(r => r.pendente);
+    setMsg((novos ? `Pronto! ${fmt(novos)} concurso(s) novo(s) no total${det ? " (" + det + ")" : ""}.` : "Tudo em dia, nenhum concurso novo.") + ` (fonte: ${[...new Set(ok.map(r => r.fonte))].join(" / ")}).` +
+           (parc.length ? ` Parou antes de terminar em: ${parc.map(r => `${GAMES[r.g].nome} (faltam ${fmt(r.faltam)})`).join(", ")}. Toca em Atualizar de novo que continua de onde parou.` : "") +
+           (pend.length ? ` Tem muito resultado novo em: ${pend.map(r => GAMES[r.g].nome).join(", ")}. Toca em Atualizar pra baixar.` : "") +
            (falhou.length ? ` Falhou em: ${falhou.map(r => GAMES[r.g].nome).join(", ")}.` : ""));
     if (!silencioso) toast("Base atualizada!");
   }
@@ -907,15 +1708,25 @@ function planilhaParaSorteios(linhas){
   const h = linhas.findIndex((l,i) => i < 10 && l.some(c => norm(c) === "concurso"));
   if (h < 0) throw new Error("não achei a coluna “Concurso” (use a planilha de resultados da CAIXA)");
   const cab = linhas[h].map(norm), ci = cab.indexOf("concurso"), di = cab.findIndex(c => c.startsWith("data"));
-  const bolas = []; cab.forEach((c,i) => { const m = c.match(/^bola\s*0*(\d+)$/); if (m) bolas[parseInt(m[1],10)] = i; });
-  const cols = bolas.filter(x => x !== undefined), qtd = cols.length;
-  const g = Object.keys(GAMES).find(k => GAMES[k].sorteadas === qtd);
-  if (!g) throw new Error(`achei ${qtd} colunas de bolas e esperava 6 (Mega-Sena), 15 (Lotofácil) ou 20 (Lotomania)`);
+  const bolas = [], bolas2 = [];        // primeira e segunda ocorrência de cada “Bola N” (a Dupla Sena repete as colunas pro 2º sorteio)
+  cab.forEach((c,i) => { const m = c.match(/^bola\s*0*(\d+)$/); if (m){ const n = parseInt(m[1],10); if (bolas[n] === undefined) bolas[n] = i; else if (bolas2[n] === undefined) bolas2[n] = i; } });
+  const cols = bolas.filter(x => x !== undefined), cols2 = bolas2.filter(x => x !== undefined), qtd = cols.length;
+  const tem = re => cab.some(c => re.test(c));
+  const cand = Object.keys(GAMES).filter(k => GAMES[k].sorteadas === qtd);
+  let g;
+  if (cols2.length === qtd && cand.includes("duplasena")) g = "duplasena";
+  else if (tem(/m[eê]s de sorte/) && cand.includes("diadesorte")) g = "diadesorte";
+  else if (tem(/time/) && cand.includes("timemania")) g = "timemania";
+  else if (tem(/trevo/) && cand.includes("maismilionaria")) g = "maismilionaria";
+  else if (cand.includes(state.game)) g = state.game;
+  else g = cand[0];
+  if (!g) throw new Error(`achei ${qtd} colunas de bolas e esperava 5 (Quina), 6 (Mega-Sena, Dupla Sena ou +Milionária), 7 (Dia de Sorte ou Timemania), 15 (Lotofácil) ou 20 (Lotomania)`);
   const draws = [];
   for (let i = h+1; i < linhas.length; i++){
     const l = linhas[i]; if (!l) continue;
-    const n = cols.map(ix => Number(String(l[ix] ?? "").trim())).sort((a,b)=>a-b);
-    const d = {c:Number(l[ci]), d:di >= 0 ? dataExcel(l[di]) : "", n};
+    const lerN = cs => cs.map(ix => Number(String(l[ix] ?? "").trim())).sort((a,b)=>a-b);
+    const d = {c:Number(l[ci]), d:di >= 0 ? dataExcel(l[di]) : "", n:lerN(cols)};
+    if (GAMES[g].sorteios === 2 && cols2.length === qtd) d.n2 = lerN(cols2);
     if (valido(g,d)) draws.push(d);
   }
   if (!draws.length) throw new Error("nenhum concurso válido na planilha");
@@ -928,21 +1739,325 @@ async function importar(file){
     const linhas = (pk[0] === 0x50 && pk[1] === 0x4B) ? await lerXlsx(buf) : lerCsv(new TextDecoder().decode(buf));
     const {g, draws} = planilhaParaSorteios(linhas);
     draws.sort((a,b) => a.c - b.c);
-    const antes = HIST[g].ultimos[HIST[g].ultimos.length-1].c;
+    const antes = HIST[g].ultimos.length ? HIST[g].ultimos[HIST[g].ultimos.length-1].c : 0;
     mesclar(g, draws);
     const novos = draws.filter(d => d.c > antes).length;
-    meta.quando = agoraTxt(); salvarBase(); atualizarStatus();
+    meta.quando = agoraTxt(); salvarBase(); atualizarStatus(); atualizarAbas(); anunciarConferencia(conferirApostas());
     const u = HIST[g].ultimos[HIST[g].ultimos.length-1];
     setMsg(`${GAMES[g].nome}: ${draws.length} concursos lidos, ${novos} novo(s) na base. Último: ${u.c} (${u.d}).`);
     toast("Planilha importada!");
   } catch(e){ setMsg("Não consegui importar: " + e.message + "."); }
 }
 $("btnAtualizar").onclick = () => atualizarTodos(false);
+$("btnTodas").onclick = () => atualizarTodos(false, {todas:true});
 $("btnImportar").onclick = () => $("arq").click();
 $("arq").onchange = e => { const f = e.target.files[0]; if (f) importar(f); e.target.value = ""; };
 
-carregarBase();
-montarAbas(); trocar("mega");
+/* ---------- próximo concurso nas abas ---------- */
+function ultimoDe(g){ const h = HIST[g].ultimos; return h.length ? h[h.length-1].c : 0; }
+function dataBr(t){ t = String(t || "").trim(); const m = t.match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? `${m[3]}/${m[2]}/${m[1]}` : t; }
+function proximoDe(g){
+  const p = meta.prox && meta.prox[g], ult = ultimoDe(g);
+  if (p && p.c > ult) return {c:p.c, d:p.d || ""};
+  return ult > 0 ? {c:ult + 1, d:""} : {c:null, d:""};
+}
+function atualizarAbas(){
+  document.querySelectorAll(".tab").forEach(b => {
+    const p = proximoDe(b.dataset.g), el = b.querySelector(".tp");
+    el.textContent = p.c ? (p.d ? `Próximo Concurso – nº ${p.c} em ${p.d}` : `Próximo Concurso – nº ${p.c}`) : "Próximo Concurso – a confirmar";
+  });
+}
+
+/* ---------- apostas efetivadas ---------- */
+const AP_KEY = "palpites_apostas_v1";
+let APOSTAS = [], arqHandle = null;
+const apOk = a => a && GAMES[a.g] && Array.isArray(a.n) && a.n.length > 0 && a.n.every(Number.isInteger) && Number.isInteger(a.alvo) && a.alvo > 0;
+const chaveAp = (g, n, alvo) => g + "|" + alvo + "|" + n.join(",");
+function carregarApostas(){ try { const v = JSON.parse(localStorage.getItem(AP_KEY) || "[]"); if (Array.isArray(v)) APOSTAS = v.filter(apOk); } catch(e){} }
+function salvarApostas(){
+  try { localStorage.setItem(AP_KEY, JSON.stringify(APOSTAS)); } catch(e){}
+  gravarArquivoDireto(); renderApostas();
+}
+function apostaExiste(i){ const alvo = parseInt($("alvoInp").value, 10), n = state.jogos[i]; return !!(alvo > 0 && n && APOSTAS.some(a => chaveAp(a.g, a.n, a.alvo) === chaveAp(state.game, n, alvo))); }
+function alternarAposta(i, marcar){
+  const g = state.game, n = state.jogos[i].slice(), alvo = parseInt($("alvoInp").value, 10);
+  if (!(alvo > 0)){ toast("Informe o número do concurso da aposta."); return false; }
+  const k = chaveAp(g, n, alvo), idx = APOSTAS.findIndex(a => chaveAp(a.g, a.n, a.alvo) === k);
+  if (marcar){
+    if (idx < 0){
+      const px = proximoDe(g), ex = state.exJ && state.exJ[i] ? {rot:state.exJ[i].rot, txt:state.exJ[i].txt} : null;
+      APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n, ex, alvo, dataAlvo:(px.c === alvo ? px.d : ""), origem:"app", criada:new Date().toISOString(), modo:String(state.notaModo || "").split(".")[0].slice(0,70), res:null});
+    }
+    toast("Aposta efetivada e guardada!");
+  } else if (idx >= 0){ APOSTAS.splice(idx, 1); toast("Aposta removida."); }
+  salvarApostas(); anunciarConferencia(conferirApostas());
+  return true;
+}
+function refazerChecks(){ document.querySelectorAll("#lista .efet input").forEach(ck => ck.checked = apostaExiste(Number(ck.dataset.i))); }
+function faixaNome(g, v){
+  if (g === "quina") return {5:"QUINA", 4:"QUADRA", 3:"TERNO", 2:"DUQUE"}[v] || "";
+  if (g === "duplasena") return {6:"SENA", 5:"QUINA", 4:"QUADRA", 3:"TERNO"}[v] || "";
+  if (g === "mega") return {6:"SENA", 5:"QUINA", 4:"QUADRA"}[v] || "";
+  if (g === "lotofacil") return v >= 11 ? v + " pontos" : "";
+  if (g === "lotomania") return (v >= 16 || v === 0) ? v + " pontos" : "";
+  return v >= PREMIO_MIN[g] ? v + " acertos" : "";
+}
+function conferirApostas(){
+  let novas = 0;
+  APOSTAS.forEach(a => {
+    if (a.res) return;
+    const d = HIST[a.g].ultimos.find(x => x.c === a.alvo);
+    if (!d) return;
+    const s1 = new Set(d.n), s2 = d.n2 ? new Set(d.n2) : null;
+    const h1 = a.n.filter(v => s1.has(v)).length, h2 = s2 ? a.n.filter(v => s2.has(v)).length : null;
+    a.res = {c:d.c, d:d.d, n:d.n, n2:d.n2 || null, h1, h2, faixa:faixaNome(a.g, Math.max(h1, h2 ?? 0))};
+    novas++;
+  });
+  if (novas){ try { localStorage.setItem(AP_KEY, JSON.stringify(APOSTAS)); } catch(e){} gravarArquivoDireto(); renderApostas(); }
+  return novas;
+}
+function anunciarConferencia(n){
+  if (!n) return;
+  const premiadas = APOSTAS.filter(a => a.res && a.res.faixa).length;
+  $("apBanner").hidden = false;
+  $("apBanner").textContent = `Conferi ${n} aposta(s) com os resultados novos. ${premiadas ? "Tem aposta com faixa de prêmio na lista, confira!" : "Nenhuma chegou numa faixa de prêmio desta vez."} Toca em “Relatório (PDF / .xlsx)” pra baixar a conferência.`;
+  $("apCard").open = true; toast(`${n} aposta(s) conferida(s)!`);
+}
+function renderApostas(){
+  const L = linhasRel(), aguard = L.filter(a => !a.res).length;
+  $("apCont").textContent = L.length ? `(${L.length}: ${aguard} aguardando, ${L.length - aguard} conferida(s))` : "";
+  const box = $("apLista"); box.innerHTML = "";
+  if (!L.length){ box.innerHTML = '<div class="hint">Nenhuma aposta efetivada ainda.</div>'; return; }
+  L.forEach(a => {
+    const d = document.createElement("div"); d.className = "apitem";
+    const s1 = a.res ? new Set(a.res.n) : null, s2 = a.res && a.res.n2 ? new Set(a.res.n2) : null;
+    const top = document.createElement("div"); top.className = "ap-top";
+    top.innerHTML = `<span>${GAMES[a.g].nome} · concurso ${a.alvo}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""} <span class="origem">· ${origemTxt(a.origem)}</span></span>`;
+    const rm = document.createElement("button"); rm.className = "b"; rm.type = "button"; rm.textContent = "Remover";
+    rm.onclick = () => { APOSTAS = APOSTAS.filter(x => x.id !== a.id); salvarApostas(); refazerChecks(); };
+    top.appendChild(rm); d.appendChild(top);
+    const balls = document.createElement("div"); balls.className = "balls small";
+    a.n.forEach(v => { const b = document.createElement("span"); b.className = "ball" + (((s1 && s1.has(v)) || (s2 && s2.has(v))) ? " hit" : ""); b.textContent = pad(v); balls.appendChild(b); });
+    d.appendChild(balls);
+    if (a.ex){ const e = document.createElement("div"); e.className = "extra"; e.textContent = a.ex.rot + ": " + a.ex.txt; d.appendChild(e); }
+    const st = document.createElement("div"); st.className = "st" + (a.res ? " ok" : "");
+    st.textContent = a.res ? `Sorteio ${a.res.c}: ${a.res.n.map(pad).join(" ")}${a.res.n2 ? " | 2º: " + a.res.n2.map(pad).join(" ") : ""} — ${a.res.h2 != null ? `${a.res.h1} / ${a.res.h2} acertos` : a.res.h1 + " acertos"}${a.res.faixa ? " — " + a.res.faixa : ""}` : "Aguardando o resultado deste concurso na base.";
+    d.appendChild(st); box.appendChild(d);
+  });
+}
+function linhasRel(){
+  const ord = Object.keys(GAMES);
+  return APOSTAS.slice().sort((a, b) => ord.indexOf(a.g) - ord.indexOf(b.g) || a.alvo - b.alvo || (a.criada < b.criada ? -1 : 1));
+}
+
+/* ---------- .json de apostas ---------- */
+function carimboGeral(nome, ext){ const d = new Date(), p = n => String(n).padStart(2,"0"); state.exportSeq++; return `${p(state.exportSeq)}_${nome}_${p(d.getDate())}${p(d.getMonth()+1)}${d.getFullYear()}_${p(d.getHours())}${p(d.getMinutes())}.${ext}`; }
+const jsonApostas = () => JSON.stringify({app:"Palpites da Sorte", versao:1, exportadoEm:new Date().toISOString(), apostas:APOSTAS}, null, 1);
+$("apExp").onclick = () => { if (!APOSTAS.length){ toast("Ainda não tem aposta efetivada."); return; } baixar(carimboGeral("APOSTAS_PALPITES","json"), jsonApostas(), "application/json"); };
+$("apImp").onclick = () => $("arqJson").click();
+$("arqJson").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()), lista = (Array.isArray(j) ? j : j.apostas);
+    if (!Array.isArray(lista)) throw new Error("não achei a lista de apostas");
+    let novas = 0, ign = 0;
+    lista.forEach(a => {
+      if (!apOk(a)){ ign++; return; }
+      if (APOSTAS.some(x => x.id === a.id || chaveAp(x.g, x.n, x.alvo) === chaveAp(a.g, a.n, a.alvo))){ return; }
+      APOSTAS.push({id:String(a.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6)), g:a.g, n:a.n, ex:a.ex || null, alvo:a.alvo, dataAlvo:a.dataAlvo || "", criada:a.criada || new Date().toISOString(), origem:a.origem || "", modo:a.modo || "", res:a.res || null});
+      novas++;
+    });
+    salvarApostas(); refazerChecks(); const c = conferirApostas();
+    toast(`${novas} aposta(s) importada(s)` + (ign ? `, ${ign} ignorada(s)` : "") + "."); anunciarConferencia(c);
+  } catch(err){ toast("Não consegui importar: " + err.message); }
+};
+// salvar direto em um arquivo (só Chrome/Edge no computador)
+if (window.showSaveFilePicker){
+  $("apDireto").hidden = false;
+  $("apDireto").onclick = async () => {
+    try {
+      arqHandle = await window.showSaveFilePicker({suggestedName:"APOSTAS_PALPITES.json", types:[{description:"Apostas (.json)", accept:{"application/json":[".json"]}}]});
+      $("apDiretoTxt").textContent = "Salvando automaticamente em: " + arqHandle.name + " (vale até fechar esta página).";
+      await gravarArquivoDireto();
+    } catch(e){}
+  };
+}
+async function gravarArquivoDireto(){
+  if (!arqHandle) return;
+  try { const w = await arqHandle.createWritable(); await w.write(jsonApostas()); await w.close(); }
+  catch(e){ $("apDiretoTxt").textContent = "Não consegui gravar no arquivo; use “Exportar apostas”."; arqHandle = null; }
+}
+
+/* ---------- relatório de conferência (tela, PDF e .xlsx) ---------- */
+function resumoRel(){ const L = linhasRel(), conf = L.filter(a => a.res).length; return {L, conf, aguard:L.length - conf, pr:L.filter(a => a.res && a.res.faixa).length}; }
+function htmlRel(){
+  const {L, conf, aguard, pr} = resumoRel();
+  let h = `<h1>Relatório de conferência das apostas</h1><div class="peq">Palpites da Sorte · gerado em ${agoraTxt()}</div>`;
+  if (!L.length) return h + "<p>Nenhuma aposta efetivada ainda.</p>";
+  h += `<p><b>${L.length}</b> aposta(s): ${conf} conferida(s), ${aguard} aguardando o resultado${conf ? `; ${pr} com faixa de prêmio` : ""}.</p>`;
+  Object.keys(GAMES).forEach(g => {
+    const xs = L.filter(a => a.g === g); if (!xs.length) return;
+    h += `<h2>${xe(GAMES[g].nome)}</h2><table><thead><tr><th>Concurso</th><th>Aposta</th><th>Resultado</th><th>Acertos</th><th>Faixa</th></tr></thead><tbody>`;
+    xs.forEach(a => {
+      const r = a.res, s1 = r ? new Set(r.n) : null, s2 = r && r.n2 ? new Set(r.n2) : null;
+      const ap = a.n.map(v => `<span class="${((s1 && s1.has(v)) || (s2 && s2.has(v))) ? "rh" : ""}">${pad(v)}</span>`).join(" ") + (a.ex ? `<br><span class="peq">${xe(a.ex.rot)}: ${xe(a.ex.txt)}</span>` : "");
+      h += `<tr><td>${a.alvo}${a.dataAlvo ? `<br><span class="peq">${xe(a.dataAlvo)}</span>` : ""}<br><span class="peq">${origemTxt(a.origem)}</span></td><td>${ap}</td><td>${r ? r.n.map(pad).join(" ") + (r.n2 ? "<br>2º: " + r.n2.map(pad).join(" ") : "") : "aguardando"}</td><td>${r ? (r.h2 != null ? `${r.h1} / ${r.h2}` : r.h1) : "—"}</td><td>${r ? xe(r.faixa || "sem prêmio") : "—"}</td></tr>`;
+    });
+    h += "</tbody></table>";
+  });
+  return h + `<p class="peq">Números em destaque foram sorteados. Na Dupla Sena, a coluna Acertos mostra 1º sorteio / 2º sorteio. O mês de sorte, o time do coração e os trevos não são conferidos. As faixas de prêmio são aproximadas: confira sempre na tabela oficial da CAIXA. Ferramenta de diversão: loteria é sorte pura.</p>`;
+}
+function abrirRel(){ $("relCorpo").innerHTML = htmlRel(); $("relOver").hidden = false; document.body.classList.add("relOn"); $("relOver").scrollTop = 0; }
+function fecharRel(){ $("relOver").hidden = true; document.body.classList.remove("relOn"); }
+$("apRel").onclick = abrirRel;
+$("relFechar").onclick = fecharRel;
+$("relPdf").onclick = () => { if (window.AndroidArq) window.AndroidArq.imprimir(); else window.print(); };
+$("relXlsx").onclick = () => { if (!APOSTAS.length){ toast("Ainda não tem aposta efetivada."); return; } baixar(carimboGeral("CONFERENCIA_APOSTAS","xlsx"), gerarRelXlsx(), XLSX_MIME); };
+function gerarRelXlsx(){
+  const {L, conf, aguard, pr} = resumoRel(), NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
+  const cs = (r, c, t, st) => `<c r="${colL(c)}${r}" s="${st || 0}" t="inlineStr"><is><t xml:space="preserve">${xe(t)}</t></is></c>`;
+  const cn = (r, c, v, st) => `<c r="${colL(c)}${r}" s="${st || 0}"><v>${v}</v></c>`;
+  let r1 = `<row r="1">${cs(1,1,"Conferência das apostas — Palpites da Sorte",2)}</row><row r="2">${cs(2,1,`Gerado em ${agoraTxt()}. ${L.length} aposta(s): ${conf} conferida(s), ${aguard} aguardando.`,0)}</row>`;
+  const cab = ["Loteria","Concurso","Data","Aposta (dezenas)","Extra (não conferido)","Resultado 1º sorteio","Resultado 2º sorteio","Acertos 1º","Acertos 2º","Faixa","Situação","Origem"];
+  r1 += `<row r="4">${cab.map((t, i) => cs(4, i + 1, t, 1)).join("")}</row>`;
+  L.forEach((a, i) => {
+    const r = 5 + i, x = a.res;
+    r1 += `<row r="${r}">${cs(r,1,GAMES[a.g].nome)}${cn(r,2,a.alvo)}${cs(r,3,x ? x.d : (a.dataAlvo || ""))}${cs(r,4,a.n.map(pad).join(" "))}${cs(r,5,a.ex ? a.ex.rot + ": " + a.ex.txt : "")}${cs(r,6,x ? x.n.map(pad).join(" ") : "")}${cs(r,7,x && x.n2 ? x.n2.map(pad).join(" ") : "")}${x ? cn(r,8,x.h1) : cs(r,8,"")}${x && x.h2 != null ? cn(r,9,x.h2) : cs(r,9,"")}${cs(r,10,x ? (x.faixa || "sem prêmio") : "")}${cs(r,11,x ? "Conferida" : "Aguardando o concurso " + a.alvo)}${cs(r,12,origemTxt(a.origem))}</row>`;
+  });
+  const larg = [14,10,12,44,28,44,44,10,10,14,26,16];
+  const sheet1 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${larg.map((w, i) => `<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${r1}</sheetData></worksheet>`;
+  let r2 = `<row r="1">${cs(1,1,"Resumo por loteria",2)}</row><row r="3">${["Loteria","Apostas","Conferidas","Aguardando","Com faixa de prêmio"].map((t, i) => cs(3, i + 1, t, 1)).join("")}</row>`, k = 4;
+  Object.keys(GAMES).forEach(g => { const xs = L.filter(a => a.g === g); if (!xs.length) return;
+    r2 += `<row r="${k}">${cs(k,1,GAMES[g].nome)}${cn(k,2,xs.length)}${cn(k,3,xs.filter(a => a.res).length)}${cn(k,4,xs.filter(a => !a.res).length)}${cn(k,5,xs.filter(a => a.res && a.res.faixa).length)}</row>`; k++; });
+  r2 += `<row r="${k}">${cs(k,1,"Total",1)}${cn(k,2,L.length,1)}${cn(k,3,conf,1)}${cn(k,4,aguard,1)}${cn(k,5,pr,1)}</row>`;
+  const sheet2 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><cols><col min="1" max="1" width="18" customWidth="1"/><col min="2" max="5" width="20" customWidth="1"/></cols><sheetData>${r2}</sheetData></worksheet>`;
+  const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ${NS}><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="14"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1B7A54"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>`;
+  const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships", PK = "http://schemas.openxmlformats.org/package/2006/relationships", H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+  return zipSemCompressao([
+    {nome:"[Content_Types].xml", texto:`${H}<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`},
+    {nome:"_rels/.rels", texto:`${H}<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+    {nome:"xl/workbook.xml", texto:`${H}<workbook ${NS} xmlns:r="${R}"><sheets><sheet name="Conferência" sheetId="1" r:id="rId1"/><sheet name="Resumo" sheetId="2" r:id="rId2"/></sheets></workbook>`},
+    {nome:"xl/_rels/workbook.xml.rels", texto:`${H}<Relationships xmlns="${PK}"><Relationship Id="rId1" Type="${R}/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="${R}/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="${R}/styles" Target="styles.xml"/></Relationships>`},
+    {nome:"xl/styles.xml", texto:styles}, {nome:"xl/worksheets/sheet1.xml", texto:sheet1}, {nome:"xl/worksheets/sheet2.xml", texto:sheet2}
+  ]);
+}
+$("alvoInp").addEventListener("input", refazerChecks);
+
+/* ---------- aposta manual e leitura por foto ---------- */
+const origemTxt = o => ({app:"gerada pelo app", manual:"digitada", foto:"lida da foto"}[o] || "gerada pelo app");
+function parseApostas(g, txt){
+  const c = GAMES[g], linhas = String(txt || "").split(/\r?\n|;/);
+  return linhas.map(l => {
+    const t = l.match(/\d+/g); if (!t) return null;
+    const nums = t.map(Number), erros = [];
+    const fora = nums.filter(v => v < c.min || v > c.max);
+    if (fora.length) erros.push(`fora do limite (${c.min}–${c.max}): ${fora.map(pad).join(", ")}`);
+    const rep = nums.filter((v, i) => nums.indexOf(v) !== i);
+    if (rep.length) erros.push(`repetido: ${[...new Set(rep)].map(pad).join(", ")}`);
+    if (nums.length < c.minDez || nums.length > c.maxDez) erros.push(`${nums.length} dezena(s); esta loteria pede ${c.minDez === c.maxDez ? c.minDez : c.minDez + " a " + c.maxDez}`);
+    return {n:nums.slice().sort((a, b) => a - b), erros};
+  }).filter(Boolean);
+}
+function agruparLeitura(g, texto){
+  // devolve o texto já arrumado em uma aposta por linha
+  const c = GAMES[g], linhas = texto.split(/\r?\n/).map(l => (l.match(/\d{1,3}/g) || []).map(Number)).filter(a => a.length);
+  if (linhas.length && linhas.every(a => a.length >= c.minDez && a.length <= c.maxDez)) return linhas.map(a => a.map(pad).join(" ")).join("\n");
+  const todos = [].concat(...linhas);
+  if (c.minDez === c.maxDez || todos.length % c.padrao === 0){
+    if (todos.length && todos.length % c.padrao === 0){ const o = []; for (let i = 0; i < todos.length; i += c.padrao) o.push(todos.slice(i, i + c.padrao).map(pad).join(" ")); return o.join("\n"); }
+  }
+  return linhas.map(a => a.map(pad).join(" ")).join("\n");
+}
+function exManual(g){
+  const c = GAMES[g]; if (!c.extra) return null;
+  if (c.extra === "mes"){ const m = parseInt($("mMes").value, 10); return m >= 1 ? {rot:c.extraRot, txt:MESES[m-1]} : null; }
+  if (c.extra === "time"){ const t = $("mTime").value.trim(); return t ? {rot:c.extraRot, txt:t} : null; }
+  const t = ($("mTrev").value.match(/\d+/g) || []).map(Number).filter(v => v >= 1 && v <= 6); return t.length ? {rot:c.extraRot, txt:"🍀 " + t.join(" ")} : null;
+}
+function ajustarManual(){
+  const g = $("mLot").value, c = GAMES[g];
+  $("mEx").hidden = !c.extra; $("mExMesL").hidden = c.extra !== "mes"; $("mExTimeL").hidden = c.extra !== "time"; $("mExTrevL").hidden = c.extra !== "trevos";
+  $("mTxt").placeholder = Array.from({length:c.minDez}, (_, i) => pad(c.min + i * Math.max(1, Math.floor((c.max - c.min) / c.minDez)))).join(" ");
+  const p = proximoDe(g); if (p.c) $("mCon").value = p.c;
+  $("mDat").value = p.d || "";
+  previaManual();
+}
+function previaManual(){
+  const g = $("mLot").value, L = parseApostas(g, $("mTxt").value), box = $("mPrev"); box.innerHTML = "";
+  L.forEach((a, i) => {
+    const d = document.createElement("div"); d.className = "pv" + (a.erros.length ? " err" : "");
+    const b = document.createElement("div"); b.className = "balls small";
+    a.n.forEach(v => { const e = document.createElement("span"); e.className = "ball"; e.textContent = pad(v); b.appendChild(e); });
+    d.innerHTML = `<b>Aposta ${i + 1}</b> · ${a.n.length} dezenas`; d.appendChild(b);
+    if (a.erros.length){ const e = document.createElement("div"); e.className = "e"; e.textContent = "⚠ " + a.erros.join(" · "); d.appendChild(e); }
+    box.appendChild(d);
+  });
+}
+function salvarManual(){
+  const g = $("mLot").value, alvo = parseInt($("mCon").value, 10), L = parseApostas(g, $("mTxt").value), origem = $("mSalvar").dataset.origem || "manual";
+  if (!(alvo > 0)){ toast("Informe o número do concurso."); return; }
+  if (!L.length){ toast("Digite as dezenas da aposta."); return; }
+  const ruins = L.filter(a => a.erros.length).length;
+  if (ruins){ toast(`${ruins} aposta(s) com problema: corrija antes de salvar.`); return; }
+  const ex = exManual(g), data = $("mDat").value.trim(); let novas = 0, dup = 0;
+  L.forEach(a => {
+    if (APOSTAS.some(x => chaveAp(x.g, x.n, x.alvo) === chaveAp(g, a.n, alvo))){ dup++; return; }
+    APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n:a.n, ex, alvo, dataAlvo:data, origem, criada:new Date().toISOString(), modo:"", res:null}); novas++;
+  });
+  salvarApostas(); refazerChecks(); const c = conferirApostas();
+  $("mTxt").value = ""; $("mSalvar").dataset.origem = ""; $("mFotoBox").hidden = true; previaManual();
+  toast(`${novas} aposta(s) salva(s)` + (dup ? `, ${dup} já existia(m)` : "") + "."); anunciarConferencia(c);
+}
+// leitura da foto (OCR) — só preenche o campo; quem salva é você, depois de corrigir
+const OCR_URL = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+function carregarOcr(){
+  if (window.Tesseract) return Promise.resolve();
+  return new Promise((ok, no) => { const sc = document.createElement("script"); sc.src = OCR_URL; sc.onload = ok; sc.onerror = () => no(new Error("sem internet para baixar o leitor de texto")); document.head.appendChild(sc); });
+}
+async function prepararImagem(arq){
+  const url = URL.createObjectURL(arq), img = new Image(); img.src = url; await img.decode().catch(() => {});
+  const W = 1800, esc = Math.min(2.5, W / (img.naturalWidth || W)), cv = document.createElement("canvas");
+  cv.width = Math.round((img.naturalWidth || 800) * esc); cv.height = Math.round((img.naturalHeight || 600) * esc);
+  const cx = cv.getContext("2d", {willReadFrequently:true}); cx.drawImage(img, 0, 0, cv.width, cv.height);
+  const id = cx.getImageData(0, 0, cv.width, cv.height), d = id.data, h = new Array(256).fill(0);
+  for (let i = 0; i < d.length; i += 4){ const y = Math.round(.299 * d[i] + .587 * d[i+1] + .114 * d[i+2]); d[i] = d[i+1] = d[i+2] = y; h[y]++; }
+  const tot = cv.width * cv.height; let soma = 0; for (let i = 0; i < 256; i++) soma += i * h[i];
+  let sB = 0, wB = 0, mx = 0, lim = 128;
+  for (let t = 0; t < 256; t++){ wB += h[t]; if (!wB) continue; const wF = tot - wB; if (!wF) break; sB += t * h[t]; const mB = sB / wB, mF = (soma - sB) / wF, v = wB * wF * (mB - mF) * (mB - mF); if (v > mx){ mx = v; lim = t; } }
+  for (let i = 0; i < d.length; i += 4){ const v = d[i] > lim ? 255 : 0; d[i] = d[i+1] = d[i+2] = v; }
+  cx.putImageData(id, 0, 0);
+  return {url, canvas:cv};
+}
+async function ocrTexto(canvas, aviso){
+  await carregarOcr();
+  const w = await Tesseract.createWorker("eng", 1, {logger: m => { if (m.status === "recognizing text") aviso("Lendo… " + Math.round(m.progress * 100) + "%"); }});
+  try {
+    await w.setParameters({tessedit_char_whitelist:"0123456789 .-,", tessedit_pageseg_mode:"6", preserve_interword_spaces:"1"});
+    const r = await w.recognize(canvas); return r.data.text;
+  } finally { try { await w.terminate(); } catch(e){} }
+}
+async function lerFoto(arq){
+  const st = $("mOcrSt"); $("mFotoBox").hidden = false; st.textContent = "Preparando a imagem…";
+  try {
+    const p = await prepararImagem(arq); $("mImg").src = p.url;
+    st.textContent = "Baixando/abrindo o leitor de texto…";
+    const texto = await ocrTexto(p.canvas, m => st.textContent = m);
+    const arr = agruparLeitura($("mLot").value, texto);
+    if (!arr.trim()){ st.textContent = "Não consegui ler números nessa foto. Tente de novo mais de perto, com boa luz, ou digite as dezenas."; return; }
+    $("mTxt").value = arr; $("mSalvar").dataset.origem = "foto"; previaManual();
+    st.textContent = "Leitura pronta. Compare com a foto, corrija o que estiver errado (os avisos em vermelho ajudam) e toque em Salvar.";
+  } catch(e){ st.textContent = "Não deu para ler a foto: " + e.message + ". Digite as dezenas à mão."; }
+}
+Object.keys(GAMES).forEach(g => { const o = document.createElement("option"); o.value = g; o.textContent = GAMES[g].nome; $("mLot").appendChild(o); });
+MESES.forEach((m, i) => { const o = document.createElement("option"); o.value = i + 1; o.textContent = m; $("mMes").appendChild(o); });
+$("mLot").onchange = ajustarManual; $("mTxt").addEventListener("input", previaManual);
+$("mSalvar").onclick = salvarManual;
+$("mFoto").onclick = () => $("mArq").click();
+$("mArq").onchange = e => { const f = e.target.files[0]; e.target.value = ""; if (f) lerFoto(f); };
+$("manCard").addEventListener("toggle", () => { if ($("manCard").open && !$("mCon").value) ajustarManual(); });
+
+carregarBase(); carregarApostas();
+montarAbas(); atualizarAbas(); trocar("mega"); ajustarManual(); renderApostas(); anunciarConferencia(conferirApostas());
 if (navigator.onLine !== false) atualizarTodos(true);
 </script>
 <script>

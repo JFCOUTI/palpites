@@ -226,6 +226,18 @@ html.grande .mode{gap:14px}
 .esp details{margin-top:8px}.esp summary{cursor:pointer;font-weight:700}
 .esp .hl{font-family:ui-monospace,Consolas,monospace;font-size:.84rem;margin:3px 0}
 .espTag{font-weight:700;font-size:.78rem;color:#9a6b00}
+#genViz{margin:10px 0}
+#genCv{width:100%;max-width:340px;height:90px;border:1px solid var(--line);border-radius:8px;background:var(--bg);display:block;margin:6px 0}
+.gtab{border-collapse:collapse;width:100%;font-size:.88rem;margin:8px 0}
+.gtab th,.gtab td{border:1px solid var(--line);padding:5px 7px;text-align:left}
+.gtab th{background:var(--soft)}
+.gverd{margin:8px 0;padding:8px 10px;border-radius:10px;border:1px dashed var(--line);font-weight:600}
+.genrow{align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+.gsel,.gin{max-width:100%;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.gin{width:5em}
+.grow{display:flex;align-items:center;gap:8px;padding:4px 0;flex-wrap:wrap;border-bottom:1px dashed var(--line)}
+.grow label{flex:1 1 170px;font-size:.9rem}.grow small{display:block;color:var(--mute,#777);font-size:.78rem}
+.grow input[type=range]{flex:1 1 90px;min-width:90px}.grow .gv{width:2.6em;text-align:right;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -373,6 +385,51 @@ html.grande .mode{gap:14px}
     <div class="modes">
       <label class="mode"><input type="radio" name="modo" value="fibonacci">
         <div><b>Fibonacci e razão áurea</b><span>As dezenas são espalhadas pela razão áurea (φ ≈ 1,618, que nasce da sequência 1, 1, 2, 3, 5, 8, 13…), com um tremidinho aleatório. Só ficam jogos com a quantidade de números de Fibonacci (1, 2, 3, 5, 8, 13, 21, 34, 55, 89) na faixa mais comum do histórico.</span></div></label>
+    </div>
+
+    <div class="mode-sep">Algoritmo genético</div>
+    <div class="modes">
+      <label class="mode"><input type="radio" name="modo" value="genetico">
+        <div><b>Algoritmo genético</b><span>Evolui um conjunto de jogos por seleção, cruzamento e mutação, como na natureza. Dá pra misturar com as outras estratégias: cobertura, anti-multidão, perfil histórico, quentes, Saliu, amplitude, Fibonacci, Dígitos, e usar fractais como semente ou mutação. Não prevê o sorteio: só otimiza o que dá pra medir.</span></div></label>
+    </div>
+    <div class="dgpanel" id="genPanel" hidden>
+      <div class="hint" id="genTxt"></div>
+      <div class="dgrow genrow"><b>Mistura</b>
+        <select id="genFit" class="gsel">
+          <option value="cob">Só cobertura do conjunto</option>
+          <option value="mult">Só anti-multidão</option>
+          <option value="hist">Só perfil histórico (só pra diversão)</option>
+          <option value="equil">Equilibrada (cobertura + multidão + histórico…)</option>
+          <option value="foge">Foge da multidão</option>
+          <option value="diversao">Só diversão (histórico, Saliu, Fibonacci…)</option>
+          <option value="tropa">A tropa toda (tudo misturado)</option>
+          <option value="custom">Personalizada</option>
+        </select>
+      </div>
+      <details id="genRegs"><summary>Réguas e pesos: monta a tua mistura</summary><div id="genRows"></div></details>
+      <div class="dgrow genrow"><b>Semente</b>
+        <select id="genSem" class="gsel">
+          <option value="aleatoria">Aleatória</option>
+          <option value="fractal">Jogos do fractal escolhido</option>
+          <option value="fibonacci">Espiral de Fibonacci</option>
+          <option value="digitos">Jogos dentro dos Dígitos</option>
+          <option value="fechamento">Fechamento (usa as configurações do Fechamento)</option>
+        </select>
+      </div>
+      <div class="dgrow genrow"><b>Fractal</b>
+        <select id="genFrac" class="gsel"><option value="sorteia">🎲 sortear um a cada vez</option></select>
+      </div>
+      <label class="mx"><input type="checkbox" id="genMutFrac"><span><b>Mutação fractal</b><small>quando o algoritmo troca uma dezena, o número novo vem do fractal escolhido</small></span></label>
+      <label class="mx"><input type="checkbox" id="genChave"><span><b>Wonder Grid: número-chave em todos os jogos</b><small>só vale com a régua Wonder Grid marcada</small></span></label>
+      <div class="dgrow genrow">
+        <b>População</b><input id="genPop" class="gin" type="number" min="10" max="200" value="40">
+        <b>Gerações</b><input id="genGer" class="gin" type="number" min="10" max="300" value="60">
+        <b>Mutação %</b><input id="genMut" class="gin" type="number" min="1" max="80" value="20">
+      </div>
+      <div class="hint">Os números fixos e excluídos que tu marcou em “Escolher números” valem aqui também, e os Dígitos marcados à mão pesam forte.</div>
+      <div class="btns" style="margin-top:8px"><button class="b" id="genTeste" type="button">🔬 Teste de realidade</button></div>
+      <div id="genViz" hidden><div class="hint" id="genSt"></div><canvas id="genCv" width="340" height="90"></canvas><div class="hint">Jogo 1 do melhor conjunto até agora:</div><div class="balls small" id="genBest"></div></div>
+      <div id="genOut"></div>
     </div>
 
     <details id="det">
@@ -1021,6 +1078,288 @@ function construir(o){
   return {jogos, relaxados, afrouxados, notaModo: notaModo + (usouSim ? SIMTXT : ""), chave};
 }
 
+/* ---------- algoritmo genético (misturado) ---------- */
+const GEN_REGUAS = [
+  {id:"cob", nome:"Cobertura do conjunto", dica:"pares de dezenas diferentes cobertos pelo conjunto e uso equilibrado das dezenas"},
+  {id:"mult", nome:"Anti-multidão", dica:"foge de aniversários, sequências, progressões, números redondos e linhas do volante"},
+  {id:"hist", nome:"Perfil histórico", dica:"soma, pares e baixos/altos parecidos com os sorteios passados"},
+  {id:"quen", nome:"Últimos sorteios", dica:"prefere os que mais saíram nos últimos 50 concursos"},
+  {id:"freq", nome:"Mais frequentes", dica:"prefere os que mais saíram em todo o histórico"},
+  {id:"skips", nome:"Saliu · Skips", dica:"prefere números com skip até a mediana"},
+  {id:"grid", nome:"Saliu · Wonder Grid", dica:"prefere a grade dos que mais saem junto com o número-chave"},
+  {id:"amp", nome:"Amplitude", dica:"amplitude e maior intervalo dentro da faixa comum dos sorteios"},
+  {id:"fib", nome:"Fibonacci", dica:"quantidade de números de Fibonacci na faixa comum"},
+  {id:"dig", nome:"Dígitos", dica:"dezenas, intervalos e finais dentro dos dígitos mais comuns (ou os que tu marcou)"}
+];
+const GEN_PRESETS = {
+  cob:{cob:100}, mult:{mult:100}, hist:{hist:100},
+  equil:{cob:40, mult:25, hist:15, quen:10, amp:10},
+  foge:{mult:60, cob:30, amp:10},
+  diversao:{hist:25, quen:20, freq:15, skips:15, grid:15, fib:10},
+  tropa:{cob:10, mult:10, hist:10, quen:10, freq:10, skips:10, grid:10, amp:10, fib:10, dig:10}
+};
+const GEN_NOMES = Object.fromEntries(GEN_REGUAS.map(r => [r.id, r.nome]));
+function montarLinhasGen(){
+  const box = $("genRows"); box.innerHTML = "";
+  GEN_REGUAS.forEach(r => {
+    const d = document.createElement("div"); d.className = "grow";
+    d.innerHTML = `<input type="checkbox" id="gc_${r.id}"><label for="gc_${r.id}"><b>${r.nome}</b><small>${r.dica}</small></label><input type="range" id="gw_${r.id}" min="5" max="100" step="5" value="20"><span class="gv" id="gv_${r.id}">20</span>`;
+    box.appendChild(d);
+    const mudou = () => { $("gv_" + r.id).textContent = $("gw_" + r.id).value; $("genFit").value = "custom"; renderGen(); };
+    $("gc_" + r.id).addEventListener("change", mudou); $("gw_" + r.id).addEventListener("input", mudou);
+  });
+  const fs = $("genFrac"); FRAC_LISTA.forEach(f => { const o = document.createElement("option"); o.value = f; o.textContent = FRAC_NOMES[f]; fs.appendChild(o); });
+  aplicarPreset("cob");
+}
+function aplicarPreset(p){
+  const pr = GEN_PRESETS[p]; if (!pr) return;
+  GEN_REGUAS.forEach(r => { const on = pr[r.id] > 0; $("gc_" + r.id).checked = on; if (on){ $("gw_" + r.id).value = pr[r.id]; $("gv_" + r.id).textContent = pr[r.id]; } });
+}
+function lerPesos(){
+  const w = {}; GEN_REGUAS.forEach(r => { if ($("gc_" + r.id).checked){ const v = parseInt($("gw_" + r.id).value, 10) || 0; if (v > 0) w[r.id] = v; } }); return w;
+}
+function descMistura(w){
+  const tot = Object.values(w).reduce((a, b) => a + b, 0) || 1;
+  return GEN_REGUAS.filter(r => w[r.id]).map(r => `${r.nome} ${Math.round(100 * w[r.id] / tot)}%`).join(" + ") || "nenhuma régua marcada";
+}
+function renderGen(){
+  const on = document.querySelector("input[name=modo]:checked").value === "genetico"; $("genPanel").hidden = !on;
+  if (on) $("genTxt").textContent = "Aptidão do conjunto: " + descMistura(lerPesos()) + ". Cada régua dá uma nota de 0 a 100 e o algoritmo evolui o conjunto pra maximizar a média ponderada. Não muda a chance de acertar: é brincadeira com capricho.";
+}
+$("genFit").addEventListener("change", () => { if ($("genFit").value !== "custom") aplicarPreset($("genFit").value); renderGen(); });
+montarLinhasGen();
+
+function penMult(a, g){
+  const c = GAMES[g], k = a.length, mn = c.min, mx = c.max; let p = 0;
+  if (mx > 31){
+    p += Math.max(0, a.filter(v => v <= 31).length - k * 31 / mx) * 2;
+    p += Math.max(0, a.filter(v => v <= 12).length - k * 12 / mx) * 2;
+  }
+  p += Math.max(0, maiorSequencia(a) - 1) * 2;
+  for (let i = 2; i < k; i++) if (a[i] - a[i-1] === a[i-1] - a[i-2]) p += 1;
+  p += Math.max(0, a.filter(v => v % 5 === 0).length - k / 5 * 1.5) * 0.5;
+  const col = Math.ceil((mx - mn + 1) / 10), cnt = new Array(col).fill(0);
+  a.forEach(v => cnt[Math.floor((v - mn) / 10)]++);
+  p += cnt.reduce((t, x) => t + (x - k / col) * (x - k / col), 0) / k;
+  if (!multidaoOk(a, g)) p += 3;
+  return p;
+}
+function featJogo(a, g, comAmp){
+  const c = GAMES[g], k = a.length, mid = (c.min + c.max) / 2; let s = 0, par = 0, bai = 0, cons = 0;
+  for (let i = 0; i < k; i++){ const v = a[i]; s += v; if (v % 2 === 0) par++; if (v <= mid) bai++; if (i && v - a[i-1] === 1) cons++; }
+  const f = [s / k, par / k, bai / k];
+  if (comAmp){ f.push((a[k-1] - a[0]) / (c.max - c.min)); f.push(cons / Math.max(1, k - 1)); }
+  return f;
+}
+function ctxHist(g, draws){
+  const S = GAMES[g].sorteadas, F = draws.filter(d => d.n.length === S).map(d => featJogo(d.n.slice().sort((x,y)=>x-y), g, true));
+  const m = [], sd = [];
+  for (let j = 0; j < 5; j++){ const col = F.map(f => f[j]), mu = col.reduce((t,x)=>t+x,0) / (col.length || 1); m.push(mu); sd.push(Math.max(1e-3, Math.sqrt(col.reduce((t,x)=>t+(x-mu)*(x-mu),0) / (col.length || 1)))); }
+  return {m, sd};
+}
+function fitHist(a, g, ctx){
+  const f = featJogo(a, g, a.length === GAMES[g].sorteadas); let z = 0;
+  for (let j = 0; j < f.length; j++) z += ((f[j] - ctx.m[j]) / ctx.sd[j]) ** 2;
+  return -z;
+}
+
+/* monta as réguas (cada uma dá nota 0..1) e devolve avaliar(jogos) */
+function montarRegua(g, k, w, hist, ex){
+  const cfg = GAMES[g], N = cfg.max - cfg.min + 1, mn = cfg.min, T = [], cache = new Map();
+  let base = null, chave = null, duro = null, bufPar = null;
+  const rk = pm => { const o = []; for (let v = cfg.min; v <= cfg.max; v++) o.push(v); o.sort((a, b) => pm[a] - pm[b] || a - b); const r = {}; o.forEach((v, i) => r[v] = i / (N - 1)); return r; };
+  const media = (j, r) => { let s = 0; for (const v of j) s += r[v]; return s / j.length; };
+  if (w.mult) T.push({id:"mult", w:w.mult, f:j => 1 / (1 + penMult(j, g) / 3)});
+  if (w.hist){ const ctx = ctxHist(g, hist), nf = k === cfg.sorteadas ? 5 : 3; T.push({id:"hist", w:w.hist, f:j => Math.exp(fitHist(j, g, ctx) / (2 * nf))}); }
+  if (w.quen){ const r = rk(pesosQuentes(g, hist)); T.push({id:"quen", w:w.quen, f:j => media(j, r)}); }
+  if (w.freq){ const r = rk(pesosFrequentes(g, hist.length)); T.push({id:"freq", w:w.freq, f:j => media(j, r)}); }
+  if (w.skips){ const sk = saliuSkips(g, hist); T.push({id:"skips", w:w.skips, f:j => j.filter(v => sk.skips[v] <= sk.mediana).length / j.length}); }
+  if (w.grid){
+    const wg = wonderGrid(g, k, ex.exc, ex.fix, hist), gs = new Set(wg.grid); gs.add(wg.key); chave = wg.key;
+    if (ex.chave && wg.base.length <= k) base = wg.base;
+    T.push({id:"grid", w:w.grid, f:j => j.filter(v => gs.has(v)).length / j.length});
+  }
+  if (w.amp){ const am = amplitudeFaixa(g, k, hist);
+    T.push({id:"amp", w:w.amp, f:j => { const x = ampInfo(j), d = Math.max(0, am.aMin - x.amp, x.amp - am.aMax) / Math.max(1, am.aMax - am.aMin), e = Math.max(0, x.maxGap - am.gMax) / Math.max(1, am.gMax); return Math.exp(-3 * (d + e)); }}); }
+  if (w.fib){ const fb = fibFaixa(g, k, hist), fs = fibSet(cfg);
+    T.push({id:"fib", w:w.fib, f:j => { const x = fibContagem(j, fs), d = Math.max(0, fb.lo - x, x - fb.hi); return Math.exp(-d); }}); }
+  if (w.dig){ const dg = ex.digitos || digitosAuto(g, hist);
+    const dentro = j => { const x = digitosJogo(j); return (dg.a.has(x.a) ? 1 : 0) + (dg.b.has(x.b) ? 1 : 0) + (dg.c.has(x.c) ? 1 : 0); };
+    T.push({id:"dig", w:w.dig, f:j => dentro(j) / 3}); if (ex.digitos) duro = j => dentro(j) === 3; }
+  const cobSet = jogos => {
+    if (!bufPar) bufPar = new Uint8Array(N * N); else bufPar.fill(0);
+    const uso = new Array(N).fill(0); let dist = 0;
+    jogos.forEach(j => { for (let a = 0; a < j.length; a++){ const x = j[a] - mn; uso[x]++; for (let b = a + 1; b < j.length; b++){ const i = x * N + (j[b] - mn); if (!bufPar[i]){ bufPar[i] = 1; dist++; } } } });
+    const q = jogos.length, k0 = jogos[0].length, maxPar = Math.min(q * k0 * (k0 - 1) / 2, N * (N - 1) / 2), mu = q * k0 / N;
+    const sd = Math.sqrt(uso.reduce((t, x) => t + (x - mu) * (x - mu), 0) / N);
+    return Math.max(0, Math.min(1, dist / maxPar - 0.08 * (sd / (mu || 1))));
+  };
+  const avaliar = jogos => {
+    const q = jogos.length, acc = T.map(() => 0), ch = new Set(); let viol = 0;
+    jogos.forEach(j => { const key = j.join(","); ch.add(key); let c = cache.get(key);
+      if (!c){ c = {s:T.map(t => t.f(j)), v:duro ? (duro(j) ? 0 : 1) : 0}; if (cache.size > 150000) cache.clear(); cache.set(key, c); }
+      c.s.forEach((x, i) => acc[i] += x); viol += c.v; });
+    const S = {}; let tot = 0, pw = 0;
+    T.forEach((t, i) => { S[t.id] = acc[i] / q; tot += t.w * S[t.id]; pw += t.w; });
+    if (w.cob){ S.cob = cobSet(jogos); tot += w.cob * S.cob; pw += w.cob; }
+    const dup = q - ch.size;
+    return {total:100 * tot / pw - 1000 * dup - 300 * viol, S, viol, dup};
+  };
+  return {avaliar, base, chave, temDuro:!!duro};
+}
+
+async function evoluir(o){
+  const cfg = GAMES[o.g], nExtra = o.k - o.base.length, q = o.q, P = o.pop, t0 = performance.now(), R = o.regua;
+  const jog = e => o.base.concat(e).sort((x, y) => x - y), fit = set => R.avaliar(set.map(jog)).total;
+  const tipoFrac = () => o.frac === "sorteia" ? FRAC_LISTA[rint(FRAC_LISTA.length)] : o.frac;
+  const dgOk = o.dgOk;
+  const jogoSemente = () => {
+    let e = null;
+    if (o.sem === "fractal") e = fractalSorteio(tipoFrac(), o.pool, nExtra, cfg, null);
+    else if (o.sem === "fibonacci") e = fibSorteio(o.pool, nExtra);
+    else if (o.sem === "digitos" && dgOk){ for (let t = 0; t < 400; t++){ e = sorteioSimples(o.pool, nExtra); if (dgOk(jog(e))) break; } }
+    else if (o.sem === "fechamento" && o.seedFech && o.seedFech.length){
+      const jg = o.seedFech[rint(o.seedFech.length)], x = jg.filter(v => !o.base.includes(v)); if (x.length === nExtra) e = x;
+    }
+    if (!e || e.length !== nExtra) e = sorteioSimples(o.pool, nExtra);
+    return e.slice().sort((x, y) => x - y);
+  };
+  const reparar = set => { const vistos = new Set(); for (let i = 0; i < set.length; i++){ let t = 0, key = set[i].join(","); while (vistos.has(key) && t++ < 50){ set[i] = sorteioSimples(o.pool, nExtra).sort((x, y) => x - y); key = set[i].join(","); } vistos.add(key); } return set; };
+  const novoNum = () => { if (o.mutFrac){ const r = fractalSorteio(tipoFrac(), o.pool, 1, cfg, null); if (r && r.length) return r[0]; } return o.pool[rint(o.pool.length)]; };
+  const novo = () => reparar(Array.from({length:q}, jogoSemente));
+  let popu = Array.from({length:P}, novo).map(s => ({s, f:fit(s)}));
+  const hist = []; let gerFeitas = 0, tempo = false;
+  const torneio = () => { let b = null; for (let i = 0; i < 3; i++){ const x = popu[rint(P)]; if (!b || x.f > b.f) b = x; } return b; };
+  const f0 = Math.max(...popu.map(x => x.f));
+  for (let gen = 1; gen <= o.gens; gen++){
+    popu.sort((a, b) => b.f - a.f); hist.push(popu[0].f); gerFeitas = gen - 1;
+    if (o.onGen) await o.onGen({gen, gens:o.gens, best:popu[0], hist});
+    if (performance.now() - t0 > (o.limiteMs || 8000)){ tempo = true; break; }
+    const prox = [popu[0], popu[1] || popu[0]];
+    while (prox.length < P){
+      const A = torneio().s, B = torneio().s;
+      const filho = A.map((jg, i) => (Math.random() < 0.5 ? jg : B[i]).slice());
+      for (let i = 0; i < q; i++) if (Math.random() < o.mut / 100){
+        const trocas = Math.random() < 0.3 ? 2 : 1;
+        for (let t = 0; t < trocas; t++){
+          const jg = filho[i], pos = rint(nExtra); let nv, tent = 0;
+          do { nv = novoNum(); } while (jg.includes(nv) && ++tent < 20);
+          if (!jg.includes(nv) && o.pool.includes(nv)) jg[pos] = nv;
+        }
+        filho[i].sort((x, y) => x - y);
+      }
+      prox.push({s:filho, f:fit(filho)});
+    }
+    popu = prox; gerFeitas = gen;
+  }
+  popu.sort((a, b) => b.f - a.f); hist.push(popu[0].f);
+  return {best:popu[0], f0, hist, gerFeitas, tempo};
+}
+function desenharHist(h){
+  const cv = $("genCv"), c = cv.getContext("2d"), W = cv.width, H = cv.height; c.clearRect(0, 0, W, H);
+  if (h.length < 2) return;
+  const mn = Math.min(...h), mx = Math.max(...h), sp = (mx - mn) || 1;
+  c.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#1b7a54"; c.lineWidth = 2; c.beginPath();
+  h.forEach((v, i) => { const x = 6 + (W - 12) * i / (h.length - 1), y = H - 8 - (H - 16) * (v - mn) / sp; i ? c.lineTo(x, y) : c.moveTo(x, y); });
+  c.stroke();
+}
+function paramsGen(){
+  return {w:lerPesos(), pop:Math.max(10, Math.min(200, parseInt($("genPop").value, 10) || 40)), gens:Math.max(10, Math.min(300, parseInt($("genGer").value, 10) || 60)), mut:Math.max(1, Math.min(80, parseInt($("genMut").value, 10) || 20)),
+    sem:$("genSem").value, frac:$("genFrac").value, mutFrac:$("genMutFrac").checked, chave:$("genChave").checked};
+}
+const pct1 = x => (100 * x).toFixed(1).replace(".", ",");
+let genRodando = false;
+async function gerarGenetico({g, k, q}){
+  if (genRodando) return; const cfg = GAMES[g], P = paramsGen(), erro = m => { $("erro").textContent = m; $("erro").hidden = !m; };
+  let w = Object.assign({}, P.w);
+  if (!Object.keys(w).length){ erro("Marca pelo menos uma régua em “Réguas e pesos”."); return; }
+  const hist = histEf(g); let avisos = "";
+  if (hist.sim){ const caiu = ["quen", "freq", "skips", "grid"].filter(x => w[x]); caiu.forEach(x => delete w[x]);
+    if (caiu.length) avisos += " Sem resultados na base, ficaram de fora: " + caiu.map(x => GEN_NOMES[x]).join(", ") + " (baixa o histórico pra usar)."; 
+    if (!Object.keys(w).length){ erro("Sem resultados na base e só sobraram réguas que dependem deles. Atualiza da CAIXA ou escolhe outras réguas."); return; } }
+  const ex = {exc:state.exc, fix:state.fix, digitos:state.digMan ? state.dig : null, chave:P.chave};
+  if (ex.digitos && w.dig && !(state.dig.a.size && state.dig.b.size && state.dig.c.size)) ex.digitos = null;
+  const fixos = [...state.fix].sort((a, b) => a - b);
+  let regua;
+  try { regua = montarRegua(g, k, w, hist, ex); } catch(e){ erro("Não consegui montar as réguas: " + e.message); return; }
+  const base = (regua.base || fixos).slice().sort((a, b) => a - b);
+  if (base.length > k){ erro("O número-chave mais os teus fixos passam do tamanho do jogo."); return; }
+  const pool = []; for (let v = cfg.min; v <= cfg.max; v++) if (!base.includes(v) && !state.exc.has(v)) pool.push(v);
+  const nExtra = k - base.length;
+  if (pool.length < nExtra){ erro("Tem número excluído demais: não sobra o suficiente pra montar o jogo."); return; }
+  if (comb(pool.length, nExtra) < q){ erro("Com esses fixos e excluídos não existem jogos diferentes suficientes. Diminui a quantidade de jogos."); return; }
+  erro(""); genRodando = true; const bt = $("gerar"), t0txt = bt.textContent; bt.disabled = true;
+  $("genViz").hidden = false; $("genSt").textContent = "Criando a primeira população…"; $("genOut").innerHTML = "";
+  let seedFech = null, semUsada = P.sem;
+  if (P.sem === "fechamento"){
+    const rf = construir({g, k, q, modo:"fechamento", fecV:parseInt($("fecV").value, 10), fecM:parseInt($("fecM").value, 10), fix:state.fix, exc:state.exc, semRepetir:false, hist});
+    if (rf.erro || !rf.jogos || !rf.jogos.length){ semUsada = "aleatoria"; avisos += " O Fechamento não conseguiu montar jogos com essas configurações, então a semente foi aleatória."; } else seedFech = rf.jogos;
+  }
+  const dg = (w.dig || P.sem === "digitos") ? (ex.digitos || digitosAuto(g, hist)) : null;
+  const dgOk = dg ? (j => { const x = digitosJogo(j); return dg.a.has(x.a) && dg.b.has(x.b) && dg.c.has(x.c); }) : null;
+  let r;
+  try {
+    r = await evoluir({g, k, q, pool, base, regua, pop:P.pop, gens:P.gens, mut:P.mut, sem:semUsada, frac:P.frac, mutFrac:P.mutFrac, seedFech, dgOk, limiteMs:9000,
+      onGen: async i => {
+        $("genSt").textContent = `Geração ${i.gen} de ${i.gens} · nota do melhor conjunto: ${i.best.f.toFixed(1)}`;
+        desenharHist(i.hist);
+        const b = $("genBest"); b.innerHTML = ""; base.concat(i.best.s[0]).sort((x, y) => x - y).forEach(v => { const e = document.createElement("span"); e.className = "ball"; e.textContent = pad(v); b.appendChild(e); });
+        if (i.gen % 2 === 0 || i.gen === 1) await pausa(0);
+      }});
+  } catch(e){ erro("O genético tropeçou: " + e.message); return; }
+  finally { genRodando = false; bt.disabled = false; bt.textContent = t0txt; }
+  const jogos = r.best.s.map(e => base.concat(e).sort((x, y) => x - y)), fin = regua.avaliar(jogos);
+  const rnd = {}; const NR = 20; for (let t = 0; t < NR; t++){ const a = regua.avaliar(Array.from({length:q}, () => base.concat(sorteioSimples(pool, nExtra)).sort((x, y) => x - y))); for (const id in a.S) rnd[id] = (rnd[id] || 0) + a.S[id] / NR; }
+  const tot = Object.values(w).reduce((a, b) => a + b, 0);
+  const linhas = GEN_REGUAS.filter(x => w[x.id]).map(x => `<tr><td>${x.nome}</td><td>${Math.round(100 * w[x.id] / tot)}%</td><td>${pct1(rnd[x.id])}</td><td><b>${pct1(fin.S[x.id])}</b></td></tr>`).join("");
+  $("genOut").innerHTML = `<div class="hint"><b>Nota por régua</b> (0 a 100): conjunto genético contra a média de ${NR} conjuntos aleatórios do mesmo tamanho.</div><table class="gtab"><tr><th>Régua</th><th>Peso</th><th>Aleatório</th><th>Genético</th></tr>${linhas}</table>`;
+  const semTxt = {aleatoria:"aleatória", fractal:"jogos do fractal (" + (P.frac === "sorteia" ? "sorteado a cada vez" : FRAC_NOMES[P.frac]) + ")", fibonacci:"espiral de Fibonacci", digitos:"jogos dentro dos Dígitos", fechamento:"jogos do Fechamento"}[semUsada];
+  state.jogos = jogos; state.exJ = cfg.extra ? jogos.map(() => gerarExtra(g)) : null; state.k = k; state.modo = "genetico"; state.mix = null; state.afrouxados = 0; state.chave = regua.base ? regua.chave : null;
+  state.notaModo = `Algoritmo genético misturado: ${descMistura(w)}. Semente ${semTxt}${P.mutFrac ? ", mutação fractal (" + (P.frac === "sorteia" ? "sorteada" : FRAC_NOMES[P.frac]) + ")" : ""}; população de ${P.pop}, ${r.gerFeitas} geração(ões)${r.tempo ? " (parou pelo limite de tempo)" : ""}, mutação de ${P.mut}%. A nota do melhor conjunto foi de ${r.f0.toFixed(1)} (população inicial) para ${r.best.f.toFixed(1)}.${regua.base ? " Número-chave do Wonder Grid (" + pad(regua.chave) + ") em todos os jogos." : ""}${regua.temDuro ? (fin.viol ? ` Atenção: ${fin.viol} jogo(s) ficaram fora dos Dígitos que tu marcou.` : " Todos os jogos respeitam os Dígitos que tu marcou.") : ""}${avisos}${hist.sim ? SIMTXT : ""} Não muda a chance de acertar: use o “Teste de realidade” pra ver isso com números.`;
+  mostrar(0, q);
+}
+
+/* ---------- teste de realidade do genético ---------- */
+async function testeRealidade(){
+  if (genRodando) return;
+  const g = state.game, cfg = GAMES[g], out = $("genOut"), P = paramsGen(), hist = HIST[g].ultimos, S = cfg.sorteadas;
+  const k = parseInt($("dez").value, 10), q = Math.max(2, Math.min(20, parseInt($("qtd").value, 10) || 10));
+  if (!(k >= cfg.minDez && k <= cfg.maxDez)){ out.innerHTML = '<div class="err">Escolhe uma quantidade de dezenas válida.</div>'; return; }
+  if (!Object.keys(P.w).length){ out.innerHTML = '<div class="err">Marca pelo menos uma régua.</div>'; return; }
+  if (hist.length < 200){ out.innerHTML = `<div class="err">${cfg.nome} tem só ${hist.length} concursos na base. O teste precisa de pelo menos 200: toca em “🔄 Atualizar da CAIXA” ou importa a planilha.</div>`; return; }
+  genRodando = true; $("genTeste").disabled = true; out.innerHTML = '<div class="hint">Rodando o teste… (o genético é treinado só com os concursos antigos e depois jogado contra concursos que ele nunca viu)</div>';
+  await pausa(30);
+  try {
+    const M = Math.min(300, Math.floor(hist.length * 0.25)), treino = hist.slice(0, hist.length - M), teste = hist.slice(hist.length - M);
+    const pool = []; for (let v = cfg.min; v <= cfg.max; v++) pool.push(v);
+    const regua = montarRegua(g, k, P.w, treino, {exc:new Set(), fix:new Set(), digitos:null, chave:false});
+    const sem = P.sem === "fechamento" ? "aleatoria" : P.sem;
+    const dg = (P.w.dig || sem === "digitos") ? digitosAuto(g, treino) : null, dgOk = dg ? (j => { const x = digitosJogo(j); return dg.a.has(x.a) && dg.b.has(x.b) && dg.c.has(x.c); }) : null;
+    const alvo = teste.map(d => new Set(d.n)), minP = PREMIO_MIN[g], N = cfg.max - cfg.min + 1;
+    const medir = sets => { let soma = 0, premios = 0, n = 0; sets.forEach(set => set.forEach(j => alvo.forEach(a => { let h = 0; for (const v of j) if (a.has(v)) h++; soma += h; if (h >= minP) premios++; n++; }))); return {media:soma / n, premio:premios / n, n}; };
+    const R = 3, gen = [];
+    for (let r = 0; r < R; r++){
+      const e = await evoluir({g, k, q, pool, base:[], regua, pop:P.pop, gens:P.gens, mut:P.mut, sem, frac:P.frac, mutFrac:P.mutFrac, seedFech:null, dgOk, limiteMs:5000});
+      gen.push(e.best.s.map(x => x.slice())); out.innerHTML = `<div class="hint">Rodando o teste… evolução ${r + 1} de ${R} pronta</div>`; await pausa(0);
+    }
+    const alea = Array.from({length:R * 10}, () => Array.from({length:q}, () => sorteioSimples(pool, k).sort((x, y) => x - y)));
+    const A = medir(gen), B = medir(alea), teoMed = k * S / N, teoPr = probAcertos(g, k, minP);
+    const varH = k * (S / N) * (1 - S / N) * (N - k) / (N - 1), se = Math.sqrt(varH / A.n), z = (A.media - teoMed) / se;
+    const pc = x => (100 * x).toFixed(3).replace(".", ",") + "%", f2 = x => x.toFixed(4).replace(".", ",");
+    const verd = Math.abs(z) < 3
+      ? "Diferença dentro do que o acaso faz sozinho: o genético não deu vantagem nenhuma. É exatamente o que a matemática diz."
+      : "Nesta amostra apareceu uma diferença maior que o esperado, mas isso costuma ser acaso (ou o algoritmo ajustado demais ao passado). Repete com outro período ou outra mistura: a diferença some.";
+    out.innerHTML = `<div class="hint"><b>Teste de realidade · ${cfg.nome}</b>: ${R} conjuntos genéticos de ${q} jogos de ${k} dezenas (mistura: ${descMistura(P.w)}), treinados com ${fmt(treino.length)} concursos e jogados contra os ${fmt(M)} concursos seguintes, que ele nunca viu. Comparado com ${R * 10} conjuntos aleatórios do mesmo tamanho.</div>
+      <table class="gtab"><tr><th></th><th>Genético</th><th>Aleatório</th><th>Teoria</th></tr>
+      <tr><td>Média de acertos por jogo</td><td>${f2(A.media)}</td><td>${f2(B.media)}</td><td>${f2(teoMed)}</td></tr>
+      <tr><td>Jogos com ${minP}+ acertos</td><td>${pc(A.premio)}</td><td>${pc(B.premio)}</td><td>${pc(teoPr)}</td></tr>
+      <tr><td>Jogos × concursos avaliados</td><td>${fmt(A.n)}</td><td>${fmt(B.n)}</td><td>—</td></tr></table>
+      <div class="gverd">${verd}</div>`;
+  } catch(e){ out.innerHTML = `<div class="err">O teste falhou: ${xe(e.message)}</div>`; }
+  finally { genRodando = false; $("genTeste").disabled = false; }
+}
+$("genTeste").onclick = testeRealidade;
+
 /* ---------- gerar ---------- */
 function gerar(){
   const g = state.game, cfg = GAMES[g];
@@ -1034,6 +1373,7 @@ function gerar(){
   const mix = modo === "equilibrado" ? {multidao:$("mxMult").checked, amp:$("mxAmp").checked, fib:$("mxFib").checked, dig:$("mxDig").checked, fonte:$("mxFrac").value, quentes:$("mxQuentes").checked, freq:$("mxFreq").checked, skips:$("mxSkips").checked, grid:$("mxGrid").checked} : null;
   const mixOn = !!(mix && Object.values(mix).some(Boolean)), usaDig = modo === "digitos" || (mixOn && mix.dig);
   if (usaDig && state.digMan && !(state.dig.a.size && state.dig.b.size && state.dig.c.size)) return erro("Nos Dígitos, marca pelo menos 1 dígito em cada linha.");
+  if (modo === "genetico"){ gerarGenetico({g, k, q}); return true; }
   const r = construir({g, k, q, modo, fecV:parseInt($("fecV").value, 10), fecM:parseInt($("fecM").value, 10), mix:mixOn ? mix : null, fix:state.fix, exc:state.exc, semRepetir:$("semRep").checked, digitos:(usaDig && state.digMan) ? state.dig : null});
   if (r.erro) return erro(r.erro);
   erro("");
@@ -1355,7 +1695,7 @@ function renderFec(forcaPadrao){
   $("fecTxt").textContent = g === "lotomania" ? "O fechamento não serve pra Lotomania. Escolhe Mega-Sena ou Lotofácil." : g === "mega" ? "Mega-Sena: com 10 números e garantia de 4 acertos (quadra), bastam uns 3 jogos; com garantia de 5 (quina), uns 15. Quanto maior o fecho e a garantia, mais jogos." : "Lotofácil: com 18 números e 14 acertos garantidos, uns 31 jogos; com 13 garantidos, uns 6. Quanto maior o fecho e a garantia, mais jogos.";
 }
 function renderMix(){ $("mixPanel").hidden = document.querySelector("input[name=modo]:checked").value !== "equilibrado"; }
-document.querySelectorAll("input[name=modo]").forEach(r => r.addEventListener("change", () => { renderMix(); renderDig(); renderFec(); }));
+document.querySelectorAll("input[name=modo]").forEach(r => r.addEventListener("change", () => { renderMix(); renderDig(); renderFec(); renderGen(); }));
 $("mxDig").addEventListener("change", renderDig);
 $("mxTodas").onclick = () => { document.querySelectorAll("#mixPanel input[type=checkbox]").forEach(c => c.checked = true); $("mxFrac").value = "sorteia"; renderDig(); };
 $("mxNenhuma").onclick = () => { document.querySelectorAll("#mixPanel input[type=checkbox]").forEach(c => c.checked = false); $("mxFrac").value = ""; renderDig(); };
@@ -1463,7 +1803,7 @@ $("tema").onclick = () => {
 /* ---------- base de resultados: atualizar da CAIXA / importar planilha ---------- */
 const LS_KEY = "palpites_base_v1";
 const API = {mega:"megasena", lotofacil:"lotofacil", lotomania:"lotomania", quina:"quina", duplasena:"duplasena", diadesorte:"diadesorte", timemania:"timemania", maismilionaria:"maismilionaria"};
-const meta = {quando:null, prox:{}};
+const meta = {quando:null, prox:{}, sem:{}};
 function valido(g,d){
   const c = GAMES[g];
   const ok = n => Array.isArray(n) && n.length === c.sorteadas && new Set(n).size === n.length && n.every(v => Number.isInteger(v) && v >= c.min && v <= c.max);
@@ -1481,7 +1821,7 @@ function mesclar(g, draws){
 const BASE_MAX = {}; Object.keys(HIST).forEach(g => BASE_MAX[g] = HIST[g].ultimos.length ? HIST[g].ultimos[HIST[g].ultimos.length-1].c : 0);
 function salvarBase(){
   try {
-    const o = {q:meta.quando, prox:meta.prox};
+    const o = {q:meta.quando, prox:meta.prox, sem:meta.sem};
     Object.keys(GAMES).forEach(g => o[g] = HIST[g].ultimos.filter(d => d.c > BASE_MAX[g]));   // só o que não veio embutido
     localStorage.setItem(LS_KEY, JSON.stringify(o));
   } catch(e){}
@@ -1489,7 +1829,7 @@ function salvarBase(){
 function carregarBase(){
   try {
     const s = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-    if (s){ meta.quando = s.q || null; meta.prox = s.prox || {}; Object.keys(GAMES).forEach(g => mesclar(g, s[g] || [])); }
+    if (s){ meta.quando = s.q || null; meta.prox = s.prox || {}; meta.sem = s.sem || {}; Object.keys(GAMES).forEach(g => mesclar(g, s[g] || [])); }
   } catch(e){}
 }
 function agoraTxt(){ const d = new Date(), p = n => String(n).padStart(2,"0"); return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`; }
@@ -1543,9 +1883,13 @@ const FONTES = [
 const fmt = n => Number(n).toLocaleString("pt-BR");
 const pausa = ms => new Promise(r => setTimeout(r, ms));
 let atualizando = false, pararAtu = false, atuUsuario = false;
-async function buscarUm(f, g, c){
+async function buscarUm(f, g, c, falhas){
   for (let t = 0; t < 3; t++){
-    try { const d = sorteioDaApi(await getJson(f.um(g, c)), g); if (valido(g, d) && d.c === c) return d; } catch(e){}
+    try {
+      const d = sorteioDaApi(await getJson(f.um(g, c)), g);
+      if (valido(g, d) && d.c === c) return d;
+      if (falhas) falhas.set(c, valido(g, d) ? "veio o concurso " + d.c : "dados inesperados (" + (d && d.n ? d.n.length : 0) + " dezenas)");
+    } catch(e){ if (falhas) falhas.set(c, String(e.message || e).slice(0, 40)); }
     if (pararAtu) return null;
     await pausa(250 * (t + 1));
   }
@@ -1567,7 +1911,8 @@ async function atualizarJogo(g, o){
   }
   if (!base) throw new Error("nenhuma fonte respondeu");
   const hh = HIST[g].ultimos, conhecido = hh.length ? hh[hh.length-1].c : 0;
-  if (hh.length && ult.c <= conhecido) return {novos:0, fonte:base.nome};
+  const semAnt = (meta.sem[g] || []);
+  if (hh.length && ult.c <= conhecido) return {novos:0, fonte:base.nome, semFonte:semAnt.length};
   const tem = new Set(hh.map(d => d.c)), primeiro = hh.length >= 1000 ? hh[0].c : 1;
   let faltam = []; for (let c = primeiro; c <= ult.c; c++) if (!tem.has(c) && c !== ult.c) faltam.push(c);
   if (o.silencioso && faltam.length > 300) return {novos:0, fonte:base.nome, pendente:faltam.length + 1};
@@ -1582,28 +1927,27 @@ async function atualizarJogo(g, o){
     } catch(e){}
     faltam = faltam.filter(c => !tudo.has(c));
   }
-  const total0 = faltam.length, LOTE = 10;
+  { const ruimSet = new Set(semAnt); faltam = faltam.filter(c => !ruimSet.has(c)).concat(faltam.filter(c => ruimSet.has(c))); }   // os que já falharam antes vão por último
+  const total0 = faltam.length, LOTE = 10, falhas = new Map();
   let feitos = 0, ruins = 0, parou = false, lotes = 0;
-  const guardar = completo => {
-    const corte = faltam.find(c => !tudo.has(c));          // só guarda o trecho sem buraco (assim dá pra continuar de onde parou)
-    const lista = [...tudo.values()].filter(d => completo || corte === undefined || d.c < corte);
-    return mesclar(g, lista);
-  };
+  const guardar = () => mesclar(g, [...tudo.values()]);      // guarda tudo que veio; o que a fonte não deu fica anotado em meta.sem
   let novos = 0;
   for (let i = 0; i < faltam.length; i += LOTE){
     if (pararAtu){ parou = true; break; }
     const lote = faltam.slice(i, i + LOTE);
-    const rs = await Promise.all(lote.map(c => buscarUm(base, g, c)));
+    const rs = await Promise.all(lote.map(c => buscarUm(base, g, c, falhas)));
     let boas = 0; rs.forEach(d => { if (d){ tudo.set(d.c, d); boas++; } });
     feitos += lote.length; lotes++;
     ruins = boas === 0 ? ruins + 1 : 0;
     progresso(feitos, total0);
     if (ruins >= 3){ parou = true; break; }
-    if (lotes % 20 === 0){ novos += guardar(false); salvarBase(); if (g === state.game) atualizarStatus(); }
+    if (lotes % 20 === 0){ novos += guardar(); salvarBase(); if (g === state.game) atualizarStatus(); }
   }
-  const sobrou = faltam.filter(c => !tudo.has(c)).length;
-  novos += guardar(sobrou === 0);
-  return {novos, fonte:base.nome, faltam:sobrou, parou};
+  const restam = faltam.filter(c => !tudo.has(c)), semFonte = restam.filter(c => falhas.has(c)), naoTentados = restam.filter(c => !falhas.has(c));
+  novos += guardar();
+  meta.sem[g] = semFonte.sort((a, b) => a - b);                 // lembrados para não afundar a barra toda vez
+  const exemplos = semFonte.slice(0, 3).map(c => `${c}: ${falhas.get(c)}`);
+  return {novos, fonte:base.nome, faltam:naoTentados.length, parou, semFonte:semFonte.length, exemplos};
 }
 async function atualizarTodos(silencioso, opc){
   opc = opc || {};
@@ -1622,7 +1966,7 @@ async function atualizarTodos(silencioso, opc){
     if (pararAtu) break;
     try {
       const r = await atualizarJogo(g, {silencioso, prog:(f, t, txt) => { if (!silencioso) setMsg(`${GAMES[g].nome}: ${txt ? txt + "…" : `baixando ${fmt(f)} de ${fmt(t)} concursos…`} (toca em “Parar” se quiser interromper)`); }});
-      res.push({g, novos:r.novos, fonte:r.fonte, faltam:r.faltam || 0, pendente:r.pendente || 0, parou:!!r.parou});
+      res.push({g, novos:r.novos, fonte:r.fonte, faltam:r.faltam || 0, pendente:r.pendente || 0, parou:!!r.parou, semFonte:r.semFonte || 0, exemplos:r.exemplos || []});
     } catch(e){ res.push({g, erro:true}); }
     if (g === state.game) atualizarStatus();
   }
@@ -1637,9 +1981,10 @@ async function atualizarTodos(silencioso, opc){
     setMsg("Não consegui buscar os resultados online (o navegador costuma bloquear isso em arquivo local). Use “Importar planilha” com o arquivo baixado do site da CAIXA.");
   } else {
     const novos = ok.reduce((a,r) => a + r.novos, 0), det = ok.filter(r => r.novos > 0).map(r => `${GAMES[r.g].nome} +${fmt(r.novos)}`).join(", ");
-    const parc = ok.filter(r => r.faltam > 0), pend = ok.filter(r => r.pendente);
+    const parc = ok.filter(r => r.faltam > 0 && r.parou), pend = ok.filter(r => r.pendente);
     setMsg((novos ? `Pronto! ${fmt(novos)} concurso(s) novo(s) no total${det ? " (" + det + ")" : ""}.` : "Tudo em dia, nenhum concurso novo.") + ` (fonte: ${[...new Set(ok.map(r => r.fonte))].join(" / ")}).` +
            (parc.length ? ` Parou antes de terminar em: ${parc.map(r => `${GAMES[r.g].nome} (faltam ${fmt(r.faltam)})`).join(", ")}. Toca em Atualizar de novo que continua de onde parou.` : "") +
+           (ok.filter(r => r.semFonte).length ? ` Concursos que a fonte não entregou: ${ok.filter(r => r.semFonte).map(r => `${GAMES[r.g].nome} (${fmt(r.semFonte)}${r.exemplos && r.exemplos.length ? "; ex.: " + r.exemplos.join(", ") : ""})`).join(" | ")}. O resto já ficou guardado; se quiser, complete com “Importar planilha” do site da CAIXA.` : "") +
            (pend.length ? ` Tem muito resultado novo em: ${pend.map(r => GAMES[r.g].nome).join(", ")}. Toca em Atualizar pra baixar.` : "") +
            (falhou.length ? ` Falhou em: ${falhou.map(r => GAMES[r.g].nome).join(", ")}.` : ""));
     if (!silencioso) toast("Base atualizada!");

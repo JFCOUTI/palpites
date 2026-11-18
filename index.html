@@ -238,6 +238,42 @@ html.grande .mode{gap:14px}
 .grow{display:flex;align-items:center;gap:8px;padding:4px 0;flex-wrap:wrap;border-bottom:1px dashed var(--line)}
 .grow label{flex:1 1 170px;font-size:.9rem}.grow small{display:block;color:var(--mute,#777);font-size:.78rem}
 .grow input[type=range]{flex:1 1 90px;min-width:90px}.grow .gv{width:2.6em;text-align:right;font-variant-numeric:tabular-nums}
+.estrTag{display:inline-block;font-size:.78rem;font-weight:600;padding:1px 8px;border-radius:999px;background:var(--soft);color:var(--accent);border:1px solid var(--accent);cursor:pointer}
+.estrDet{margin:6px 0;padding:8px 10px;border-radius:10px;border:1px dashed var(--line);font-size:.84rem}
+#volOver{position:fixed;inset:0;z-index:61;background:#fff;color:#111;overflow:auto;padding:14px 16px 40px;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+#volOver[hidden]{display:none}
+#volOver .relbar select{padding:6px 8px;border-radius:8px;border:1px solid #999;font:inherit;background:#fff;color:#111}
+#volOver .relbar label{display:flex;align-items:center;gap:6px;font-size:.9rem}
+.vpag{margin:0 auto 18px;max-width:190mm}
+.vol,.vcapa{border:1px dashed #bbb;padding:10px;margin-bottom:10px;break-inside:avoid}
+.vhead{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-weight:700;border-bottom:3px solid #000;padding-bottom:4px}
+.vtit{font-size:1.3rem}
+.vban{margin:8px 0;padding:6px 10px;border:3px solid #000;font-weight:800;font-size:1.15rem;text-align:center}
+.vqtd{margin:6px 0;font-weight:700;font-size:1.05rem}
+.vgrade{display:grid;gap:5px;margin:10px auto;width:max-content;max-width:100%}
+.vc{width:var(--cel);height:var(--cel);border:2px solid #555;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:calc(var(--cel)*.42);position:relative;background:#fff;color:#111}
+.vc.on{background:#000;color:#fff;border-color:#000}
+.vc.on.x{background:#fff;color:#000}
+.vc.on.x::after{content:"✕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:calc(var(--cel)*1.05);line-height:1;font-weight:900}
+.vlist{font-size:1.9rem;font-weight:800;line-height:1.55}
+.vlist span{display:inline-block;min-width:1.8em;text-align:center;border-bottom:3px solid #000;margin:2px 4px}
+.vlist.mg{font-size:1.15rem}
+.vex{margin:6px 0;font-size:1.15rem;border:2px solid #000;padding:5px 10px;font-weight:700}
+.vdica{font-size:.85rem;color:#333;margin-top:6px}
+.vcapa h1{font-size:1.5rem;margin:4px 0}
+.vcapa table{width:100%;border-collapse:collapse;font-size:.92rem;margin:8px 0}
+.vcapa th,.vcapa td{border:1px solid #999;padding:5px 7px;text-align:left;vertical-align:top}
+.vcapa th{background:#e6efe9}
+@media screen and (max-width:700px){.vol{--cel:8.4vw!important}.vol.c5{--cel:14vw!important}}
+@media print{
+  body.volOn>*:not(#volOver){display:none!important}
+  body.volOn #volOver{position:static!important;overflow:visible!important;height:auto!important;padding:0}
+  body.volOn .relbar{display:none!important}
+  .vpag{break-after:page;margin:0 auto}
+  .vol,.vcapa{border:none;padding:0}
+  .vol+.vol{margin-top:8mm;border-top:1px dashed #000;padding-top:6mm}
+}
+@page{margin:10mm}
 </style>
 </head>
 <body>
@@ -459,6 +495,7 @@ html.grande .mode{gap:14px}
         <button class="b" id="baixarXlsx" type="button" style="display:none">⬇ .xlsx (Excel)</button>
         <button class="b" id="baixarCsv" type="button">⬇ .csv (Excel)</button>
         <button class="b" id="imprimir" type="button">🖨 Imprimir</button>
+        <button class="b" id="volRes" type="button">🧾 Volantes pra lotérica (PDF)</button>
       </div>
     </div>
     <div class="alvo"><label for="alvoInp">Aposta para o concurso nº</label><input id="alvoInp" type="number" inputmode="numeric" min="1"><span id="alvoDat" class="hint"></span></div>
@@ -505,6 +542,7 @@ html.grande .mode{gap:14px}
     </details>
     <div class="btns" style="margin-top:10px">
       <button class="b" id="apRel" type="button">📄 Relatório (PDF / .xlsx)</button>
+      <button class="b" id="volAp" type="button">🧾 Volantes das apostas aguardando (PDF)</button>
       <button class="b" id="apExp" type="button">⬇ Exportar apostas (.json)</button>
       <button class="b" id="apImp" type="button">📂 Importar apostas (.json)</button>
       <button class="b" id="apDireto" type="button" hidden>💾 Salvar direto em arquivo</button>
@@ -532,6 +570,15 @@ html.grande .mode{gap:14px}
   <div class="foot" id="aviso">Loteria é sorte pura: nenhum método aumenta a chance de ganhar — o “Equilibrado” só evita combinações pouco comuns. Jogue com moderação. +18.</div>
 </div>
 <div class="toast" id="toast"></div>
+<div id="volOver" hidden>
+  <div class="relbar">
+    <button class="b" id="volPdf" type="button">🖨 Imprimir / Salvar PDF</button>
+    <label>Marcação <select id="volMarca"><option value="bola">● bolinha cheia</option><option value="x">✕ X</option></select></label>
+    <label>Por página <select id="volPag"><option value="1">1 volante</option><option value="2">2 volantes</option></select></label>
+    <button class="b" id="volFechar" type="button">✕ Fechar</button>
+  </div>
+  <div id="volCorpo"></div>
+</div>
 <div id="relOver" hidden>
   <div class="relbar">
     <button class="b" id="relPdf" type="button">🖨 Imprimir / Salvar PDF</button>
@@ -1316,6 +1363,7 @@ async function gerarGenetico({g, k, q}){
   const semTxt = {aleatoria:"aleatória", fractal:"jogos do fractal (" + (P.frac === "sorteia" ? "sorteado a cada vez" : FRAC_NOMES[P.frac]) + ")", fibonacci:"espiral de Fibonacci", digitos:"jogos dentro dos Dígitos", fechamento:"jogos do Fechamento"}[semUsada];
   state.jogos = jogos; state.exJ = cfg.extra ? jogos.map(() => gerarExtra(g)) : null; state.k = k; state.modo = "genetico"; state.mix = null; state.afrouxados = 0; state.chave = regua.base ? regua.chave : null;
   state.notaModo = `Algoritmo genético misturado: ${descMistura(w)}. Semente ${semTxt}${P.mutFrac ? ", mutação fractal (" + (P.frac === "sorteia" ? "sorteada" : FRAC_NOMES[P.frac]) + ")" : ""}; população de ${P.pop}, ${r.gerFeitas} geração(ões)${r.tempo ? " (parou pelo limite de tempo)" : ""}, mutação de ${P.mut}%. A nota do melhor conjunto foi de ${r.f0.toFixed(1)} (população inicial) para ${r.best.f.toFixed(1)}.${regua.base ? " Número-chave do Wonder Grid (" + pad(regua.chave) + ") em todos os jogos." : ""}${regua.temDuro ? (fin.viol ? ` Atenção: ${fin.viol} jogo(s) ficaram fora dos Dígitos que tu marcou.` : " Todos os jogos respeitam os Dígitos que tu marcou.") : ""}${avisos}${hist.sim ? SIMTXT : ""} Não muda a chance de acertar: use o “Teste de realidade” pra ver isso com números.`;
+  state.estr = "Genético · " + ({cob:"Cobertura", mult:"Anti-multidão", hist:"Perfil histórico", equil:"Equilibrada", foge:"Foge da multidão", diversao:"Só diversão", tropa:"Tropa toda", custom:"Personalizada"}[$("genFit").value] || "Personalizada");
   mostrar(0, q);
 }
 
@@ -1377,7 +1425,7 @@ function gerar(){
   const r = construir({g, k, q, modo, fecV:parseInt($("fecV").value, 10), fecM:parseInt($("fecM").value, 10), mix:mixOn ? mix : null, fix:state.fix, exc:state.exc, semRepetir:$("semRep").checked, digitos:(usaDig && state.digMan) ? state.dig : null});
   if (r.erro) return erro(r.erro);
   erro("");
-  state.jogos = r.jogos; state.exJ = cfg.extra ? r.jogos.map(() => gerarExtra(g)) : null; state.k = k; state.modo = modo; state.mix = mixOn ? mix : null; state.afrouxados = r.afrouxados || 0; state.notaModo = r.notaModo; state.chave = r.chave;
+  state.jogos = r.jogos; state.exJ = cfg.extra ? r.jogos.map(() => gerarExtra(g)) : null; state.k = k; state.modo = modo; state.mix = mixOn ? mix : null; state.afrouxados = r.afrouxados || 0; state.notaModo = r.notaModo; state.chave = r.chave; state.estr = estrNome(modo, mixOn, r.notaModo);
   mostrar(r.relaxados, modo === "fechamento" ? r.jogos.length : q);
   return true;
 }
@@ -2140,7 +2188,7 @@ function alternarAposta(i, marcar){
   if (marcar){
     if (idx < 0){
       const px = proximoDe(g), ex = state.exJ && state.exJ[i] ? {rot:state.exJ[i].rot, txt:state.exJ[i].txt} : null;
-      APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n, ex, alvo, dataAlvo:(espDe(g, alvo) ? espData(g, alvo) : (px.c === alvo ? px.d : "")), esp:espDe(g, alvo), origem:"app", criada:new Date().toISOString(), modo:String(state.notaModo || "").split(".")[0].slice(0,70), res:null});
+      APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n, ex, alvo, dataAlvo:(espDe(g, alvo) ? espData(g, alvo) : (px.c === alvo ? px.d : "")), esp:espDe(g, alvo), origem:"app", estr:state.estr || "", estrDet:String(state.notaModo || "").slice(0, 900), criada:new Date().toISOString(), modo:String(state.notaModo || "").split(".")[0].slice(0,70), res:null});
     }
     toast("Aposta efetivada e guardada!");
   } else if (idx >= 0){ APOSTAS.splice(idx, 1); toast("Aposta removida."); }
@@ -2186,10 +2234,11 @@ function renderApostas(){
     const d = document.createElement("div"); d.className = "apitem";
     const s1 = a.res ? new Set(a.res.n) : null, s2 = a.res && a.res.n2 ? new Set(a.res.n2) : null;
     const top = document.createElement("div"); top.className = "ap-top";
-    top.innerHTML = `<span>${GAMES[a.g].nome} · concurso ${a.alvo}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""} <span class="origem">· ${origemTxt(a.origem)}</span>${a.esp ? ` <span class="espTag">⭐ ${xe(a.esp)}</span>` : ""}</span>`;
+    top.innerHTML = `<span>${GAMES[a.g].nome} · concurso ${a.alvo}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""} <span class="origem">· ${origemTxt(a.origem)}</span>${a.estr ? ` <span class="estrTag" role="button" tabindex="0" title="Toca pra ver o detalhe">🧬 ${xe(a.estr)}</span>` : (a.origem === "app" ? ' <span class="origem">· estratégia não registrada</span>' : "")}${a.esp ? ` <span class="espTag">⭐ ${xe(a.esp)}</span>` : ""}</span>`;
     const rm = document.createElement("button"); rm.className = "b"; rm.type = "button"; rm.textContent = "Remover";
     rm.onclick = () => { APOSTAS = APOSTAS.filter(x => x.id !== a.id); salvarApostas(); refazerChecks(); };
     top.appendChild(rm); d.appendChild(top);
+    { const tg = top.querySelector(".estrTag"); if (tg){ const dt = document.createElement("div"); dt.className = "estrDet"; dt.hidden = true; dt.textContent = a.estrDet || a.estr; tg.onclick = () => { dt.hidden = !dt.hidden; }; tg.onkeydown = e => { if (e.key === "Enter" || e.key === " "){ e.preventDefault(); dt.hidden = !dt.hidden; } }; d.appendChild(dt); } }
     const balls = document.createElement("div"); balls.className = "balls small";
     a.n.forEach(v => { const b = document.createElement("span"); b.className = "ball" + (((s1 && s1.has(v)) || (s2 && s2.has(v))) ? " hit" : ""); b.textContent = pad(v); balls.appendChild(b); });
     d.appendChild(balls);
@@ -2218,7 +2267,7 @@ $("arqJson").onchange = async e => {
     lista.forEach(a => {
       if (!apOk(a)){ ign++; return; }
       if (APOSTAS.some(x => x.id === a.id || chaveAp(x.g, x.n, x.alvo) === chaveAp(a.g, a.n, a.alvo))){ return; }
-      APOSTAS.push({id:String(a.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6)), g:a.g, n:a.n, ex:a.ex || null, alvo:a.alvo, dataAlvo:a.dataAlvo || "", criada:a.criada || new Date().toISOString(), origem:a.origem || "", esp:a.esp || "", modo:a.modo || "", res:a.res || null});
+      APOSTAS.push({id:String(a.id || Date.now().toString(36) + Math.random().toString(36).slice(2,6)), g:a.g, n:a.n, ex:a.ex || null, alvo:a.alvo, dataAlvo:a.dataAlvo || "", criada:a.criada || new Date().toISOString(), origem:a.origem || "", esp:a.esp || "", estr:a.estr || "", estrDet:a.estrDet || "", modo:a.modo || "", res:a.res || null});
       novas++;
     });
     salvarApostas(); refazerChecks(); const c = conferirApostas();
@@ -2249,13 +2298,14 @@ function htmlRel(){
   let h = `<h1>Relatório de conferência das apostas</h1><div class="peq">Palpites da Sorte · gerado em ${agoraTxt()}</div>`;
   if (!L.length) return h + "<p>Nenhuma aposta efetivada ainda.</p>";
   h += `<p><b>${L.length}</b> aposta(s): ${conf} conferida(s), ${aguard} aguardando o resultado${conf ? `; ${pr} com faixa de prêmio` : ""}.</p>`;
+  h += placarHtml();
   Object.keys(GAMES).forEach(g => {
     const xs = L.filter(a => a.g === g); if (!xs.length) return;
     h += `<h2>${xe(GAMES[g].nome)}</h2><table><thead><tr><th>Concurso</th><th>Aposta</th><th>Resultado</th><th>Acertos</th><th>Faixa</th></tr></thead><tbody>`;
     xs.forEach(a => {
       const r = a.res, s1 = r ? new Set(r.n) : null, s2 = r && r.n2 ? new Set(r.n2) : null;
       const ap = a.n.map(v => `<span class="${((s1 && s1.has(v)) || (s2 && s2.has(v))) ? "rh" : ""}">${pad(v)}</span>`).join(" ") + (a.ex ? `<br><span class="peq">${xe(a.ex.rot)}: ${xe(a.ex.txt)}</span>` : "");
-      h += `<tr><td>${a.alvo}${a.dataAlvo ? `<br><span class="peq">${xe(a.dataAlvo)}</span>` : ""}<br><span class="peq">${origemTxt(a.origem)}</span>${a.esp ? `<br><b>⭐ ${xe(a.esp)}</b>` : ""}</td><td>${ap}</td><td>${r ? r.n.map(pad).join(" ") + (r.n2 ? "<br>2º: " + r.n2.map(pad).join(" ") : "") : "aguardando"}</td><td>${r ? (r.h2 != null ? `${r.h1} / ${r.h2}` : r.h1) : "—"}</td><td>${r ? xe(r.faixa || "sem prêmio") : "—"}</td></tr>`;
+      h += `<tr><td>${a.alvo}${a.dataAlvo ? `<br><span class="peq">${xe(a.dataAlvo)}</span>` : ""}<br><span class="peq">${origemTxt(a.origem)}</span>${a.estr ? `<br><span class="peq">${xe(a.estr)}</span>` : ""}${a.esp ? `<br><b>⭐ ${xe(a.esp)}</b>` : ""}</td><td>${ap}</td><td>${r ? r.n.map(pad).join(" ") + (r.n2 ? "<br>2º: " + r.n2.map(pad).join(" ") : "") : "aguardando"}</td><td>${r ? (r.h2 != null ? `${r.h1} / ${r.h2}` : r.h1) : "—"}</td><td>${r ? xe(r.faixa || "sem prêmio") : "—"}</td></tr>`;
     });
     h += "</tbody></table>";
   });
@@ -2265,25 +2315,28 @@ function abrirRel(){ $("relCorpo").innerHTML = htmlRel(); $("relOver").hidden = 
 function fecharRel(){ $("relOver").hidden = true; document.body.classList.remove("relOn"); }
 $("apRel").onclick = abrirRel;
 $("relFechar").onclick = fecharRel;
-$("relPdf").onclick = () => { if (window.AndroidArq) window.AndroidArq.imprimir(); else window.print(); };
+$("relPdf").onclick = () => imprimirPDF("Conferencia_Apostas.pdf");
 $("relXlsx").onclick = () => { if (!APOSTAS.length){ toast("Ainda não tem aposta efetivada."); return; } baixar(carimboGeral("CONFERENCIA_APOSTAS","xlsx"), gerarRelXlsx(), XLSX_MIME); };
 function gerarRelXlsx(){
   const {L, conf, aguard, pr} = resumoRel(), NS = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"';
   const cs = (r, c, t, st) => `<c r="${colL(c)}${r}" s="${st || 0}" t="inlineStr"><is><t xml:space="preserve">${xe(t)}</t></is></c>`;
   const cn = (r, c, v, st) => `<c r="${colL(c)}${r}" s="${st || 0}"><v>${v}</v></c>`;
   let r1 = `<row r="1">${cs(1,1,"Conferência das apostas — Palpites da Sorte",2)}</row><row r="2">${cs(2,1,`Gerado em ${agoraTxt()}. ${L.length} aposta(s): ${conf} conferida(s), ${aguard} aguardando.`,0)}</row>`;
-  const cab = ["Loteria","Concurso","Data","Aposta (dezenas)","Extra (não conferido)","Resultado 1º sorteio","Resultado 2º sorteio","Acertos 1º","Acertos 2º","Faixa","Situação","Origem","Concurso especial"];
+  const cab = ["Loteria","Concurso","Data","Aposta (dezenas)","Extra (não conferido)","Resultado 1º sorteio","Resultado 2º sorteio","Acertos 1º","Acertos 2º","Faixa","Situação","Origem","Concurso especial","Estratégia","Detalhe da estratégia"];
   r1 += `<row r="4">${cab.map((t, i) => cs(4, i + 1, t, 1)).join("")}</row>`;
   L.forEach((a, i) => {
     const r = 5 + i, x = a.res;
-    r1 += `<row r="${r}">${cs(r,1,GAMES[a.g].nome)}${cn(r,2,a.alvo)}${cs(r,3,x ? x.d : (a.dataAlvo || ""))}${cs(r,4,a.n.map(pad).join(" "))}${cs(r,5,a.ex ? a.ex.rot + ": " + a.ex.txt : "")}${cs(r,6,x ? x.n.map(pad).join(" ") : "")}${cs(r,7,x && x.n2 ? x.n2.map(pad).join(" ") : "")}${x ? cn(r,8,x.h1) : cs(r,8,"")}${x && x.h2 != null ? cn(r,9,x.h2) : cs(r,9,"")}${cs(r,10,x ? (x.faixa || "sem prêmio") : "")}${cs(r,11,x ? "Conferida" : "Aguardando o concurso " + a.alvo)}${cs(r,12,origemTxt(a.origem))}${cs(r,13,a.esp || "")}</row>`;
+    r1 += `<row r="${r}">${cs(r,1,GAMES[a.g].nome)}${cn(r,2,a.alvo)}${cs(r,3,x ? x.d : (a.dataAlvo || ""))}${cs(r,4,a.n.map(pad).join(" "))}${cs(r,5,a.ex ? a.ex.rot + ": " + a.ex.txt : "")}${cs(r,6,x ? x.n.map(pad).join(" ") : "")}${cs(r,7,x && x.n2 ? x.n2.map(pad).join(" ") : "")}${x ? cn(r,8,x.h1) : cs(r,8,"")}${x && x.h2 != null ? cn(r,9,x.h2) : cs(r,9,"")}${cs(r,10,x ? (x.faixa || "sem prêmio") : "")}${cs(r,11,x ? "Conferida" : "Aguardando o concurso " + a.alvo)}${cs(r,12,origemTxt(a.origem))}${cs(r,13,a.esp || "")}${cs(r,14,a.estr || "")}${cs(r,15,a.estrDet || "")}</row>`;
   });
-  const larg = [14,10,12,44,28,44,44,10,10,14,26,16,26];
+  const larg = [14,10,12,44,28,44,44,10,10,14,26,16,26,28,60];
   const sheet1 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><sheetViews><sheetView workbookViewId="0"><pane ySplit="4" topLeftCell="A5" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews><cols>${larg.map((w, i) => `<col min="${i+1}" max="${i+1}" width="${w}" customWidth="1"/>`).join("")}</cols><sheetData>${r1}</sheetData></worksheet>`;
   let r2 = `<row r="1">${cs(1,1,"Resumo por loteria",2)}</row><row r="3">${["Loteria","Apostas","Conferidas","Aguardando","Com faixa de prêmio"].map((t, i) => cs(3, i + 1, t, 1)).join("")}</row>`, k = 4;
   Object.keys(GAMES).forEach(g => { const xs = L.filter(a => a.g === g); if (!xs.length) return;
     r2 += `<row r="${k}">${cs(k,1,GAMES[g].nome)}${cn(k,2,xs.length)}${cn(k,3,xs.filter(a => a.res).length)}${cn(k,4,xs.filter(a => !a.res).length)}${cn(k,5,xs.filter(a => a.res && a.res.faixa).length)}</row>`; k++; });
   r2 += `<row r="${k}">${cs(k,1,"Total",1)}${cn(k,2,L.length,1)}${cn(k,3,conf,1)}${cn(k,4,aguard,1)}${cn(k,5,pr,1)}</row>`;
+  { const P = placarDados(); if (P.length){ k += 2; r2 += `<row r="${k}">${cs(k,1,"Placar por estratégia (apostas conferidas)",2)}</row>`; k++;
+    r2 += `<row r="${k}">${["Estratégia","Apostas","Média de acertos","Esperado ao acaso","Com faixa de prêmio"].map((t, i) => cs(k, i + 1, t, 1)).join("")}</row>`; k++;
+    P.forEach(p => { r2 += `<row r="${k}">${cs(k,1,p.nome)}${cn(k,2,p.n)}${cn(k,3,+(p.h / p.n).toFixed(3))}${cn(k,4,+(p.e / p.n).toFixed(3))}${cn(k,5,p.pr)}</row>`; k++; }); } }
   const sheet2 = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet ${NS}><cols><col min="1" max="1" width="18" customWidth="1"/><col min="2" max="5" width="20" customWidth="1"/></cols><sheetData>${r2}</sheetData></worksheet>`;
   const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet ${NS}><fonts count="3"><font><sz val="11"/><name val="Calibri"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font><font><b/><sz val="14"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1B7A54"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf><xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/></cellXfs></styleSheet>`;
   const R = "http://schemas.openxmlformats.org/officeDocument/2006/relationships", PK = "http://schemas.openxmlformats.org/package/2006/relationships", H = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -2296,6 +2349,91 @@ function gerarRelXlsx(){
   ]);
 }
 $("alvoInp").addEventListener("input", refazerChecks);
+
+/* ---------- estratégia: nome curto e placar ---------- */
+function estrNome(modo, mixOn, nota){
+  if (modo === "equilibrado" && mixOn) return String(nota || "").split(". Filtros")[0].replace("Mistura: ", "Mistura · ").slice(0, 100);
+  try { const r = document.querySelector('input[name="modo"][value="' + modo + '"]'); if (r) return r.closest("label").querySelector("b").textContent.trim().replace(/\s*\(.*\)\s*$/, ""); } catch(e){}
+  return modo;
+}
+function placarDados(){
+  const m = new Map();
+  APOSTAS.filter(a => a.res).forEach(a => {
+    const nome = a.estr || "Não registrada", c = GAMES[a.g], N = c.max - c.min + 1;
+    const p = m.get(nome) || {nome, n:0, h:0, e:0, pr:0}; p.n++; p.h += a.res.h1; p.e += a.n.length * c.sorteadas / N; if (a.res.faixa) p.pr++; m.set(nome, p);
+  });
+  return [...m.values()].sort((a, b) => b.n - a.n);
+}
+function placarHtml(){
+  const P = placarDados(); if (!P.length) return "";
+  const tot = P.reduce((t, p) => t + p.n, 0), f = x => x.toFixed(2).replace(".", ",");
+  return `<h2>Placar por estratégia</h2><table><thead><tr><th>Estratégia</th><th>Apostas conferidas</th><th>Média de acertos</th><th>Esperado ao acaso</th><th>Com faixa de prêmio</th></tr></thead><tbody>` +
+    P.map(p => `<tr><td>${xe(p.nome)}</td><td>${p.n}</td><td>${f(p.h / p.n)}</td><td>${f(p.e / p.n)}</td><td>${p.pr}</td></tr>`).join("") +
+    `</tbody></table><p class="peq">${tot < 30 ? "<b>Amostra pequena (" + tot + " aposta(s) conferida(s)): qualquer diferença aqui é sorte.</b> " : ""}“Esperado ao acaso” é a média de acertos que jogos aleatórios do mesmo tamanho teriam. Nenhuma estratégia muda a chance de acertar: se uma aparecer na frente, quase certamente é acaso. Na Dupla Sena conta o 1º sorteio.</p>`;
+}
+function imprimirPDF(nome){
+  if (window.Desktop) window.Desktop.pdf(nome).then(r => { if (r && r.ok) toast("PDF salvo!"); });
+  else if (window.AndroidArq) window.AndroidArq.imprimir();
+  else window.print();
+}
+
+/* ---------- volantes em PDF (cola pra lotérica) ---------- */
+const VOL_COLS = {mega:10, lotofacil:5, quina:10, lotomania:10, duplasena:10, diadesorte:7, timemania:10, maismilionaria:10};
+let VOL = [];
+function volNums(g){ const c = GAMES[g], a = []; for (let v = c.min; v <= c.max; v++) a.push(v); if (g === "lotomania"){ a.shift(); a.push(0); } return a; }
+const volLinhas = g => Math.ceil(volNums(g).length / VOL_COLS[g]);
+function volHTML(a, i, tot, marca, pag){
+  const c = GAMES[a.g], cols = VOL_COLS[a.g], nums = volNums(a.g), sel = new Set(a.n), n = a.n.length;
+  const cel = pag === 2 ? "11mm" : (cols <= 7 ? "20mm" : "15mm");
+  const grade = nums.map(v => `<div class="vc${sel.has(v) ? " on" + (marca === "x" ? " x" : "") : ""}">${pad(v)}</div>`).join("");
+  const big = n > c.padrao;
+  const ord = a.n.slice().sort((x, y) => x - y);
+  return `<div class="vol c${cols}" style="--cel:${cel}">
+    <div class="vhead"><span class="vtit">${xe(c.nome)} · Concurso ${a.alvo || "a definir"}</span><span>${a.dataAlvo ? xe(a.dataAlvo) + " · " : ""}Jogo ${i} de ${tot}</span></div>
+    ${big ? `<div class="vban">JOGO COM ${n} DEZENAS: marcar ${n} números</div>` : `<div class="vqtd">Marcar ${n} números</div>`}
+    ${a.ex ? `<div class="vex">${xe(a.ex.rot)}: ${xe(a.ex.txt)}</div>` : ""}
+    <div class="vgrade" style="grid-template-columns:repeat(${cols},var(--cel))">${grade}</div>
+    <div class="vdica">Números pra falar ao atendente, em ordem:</div>
+    <div class="vlist${n > 20 ? " mg" : ""}">${ord.map(v => `<span>${pad(v)}</span>`).join(" ")}</div>
+    <div class="vdica">Não marque a “Surpresinha”: ela troca os teus números por outros.${a.estr ? " · Estratégia: " + xe(a.estr) : ""}</div>
+  </div>`;
+}
+function renderVol(){
+  const marca = $("volMarca").value, pag = parseInt($("volPag").value, 10);
+  const grupos = new Map(); VOL.forEach(a => { const k = a.g + "|" + (a.alvo || 0); grupos.set(k, grupos.get(k) || {a, n:0}); grupos.get(k).n++; });
+  let capa = `<div class="vpag"><section class="vcapa"><h1>Cola pra lotérica</h1>
+    <p>Leva esta folha (impressa ou no celular) pra lotérica. Em cada <b>volante oficial</b>, marca só os números pintados, ou entrega a folha pro atendente digitar os jogos no terminal.</p>
+    <table><thead><tr><th>Loteria</th><th>Concurso</th><th>Jogos</th><th>Dezenas por jogo</th></tr></thead><tbody>` +
+    [...grupos.values()].map(({a, n}) => { const qs = [...new Set(VOL.filter(x => x.g === a.g && (x.alvo || 0) === (a.alvo || 0)).map(x => x.n.length))].sort((x, y) => x - y).join(", "); return `<tr><td>${xe(GAMES[a.g].nome)}</td><td>${a.alvo || "a definir"}${a.dataAlvo ? " (" + xe(a.dataAlvo) + ")" : ""}</td><td>${n}</td><td>${qs}</td></tr>`; }).join("") +
+    `</tbody></table><p><b>Total: ${VOL.length} jogo(s).</b> Valor combinado no balcão: R$ ____________________</p>
+    <p class="vdica">Esta folha é uma <b>cola</b>: ela não vale como aposta e a máquina da lotérica não lê. O desenho da grade lembra o volante oficial, mas a posição dos números no papel pode variar um pouco: confira sempre os números, não o desenho. Jogo é diversão: a chance de ganhar é a mesma de qualquer outro jogo.</p></section></div>`;
+  const pags = []; let i = 0;
+  while (i < VOL.length){
+    const a = VOL[i], b = VOL[i + 1], pode = x => x && volLinhas(x.g) <= 6;
+    if (pag === 2 && pode(a) && pode(b)){ pags.push([i, i + 1], 2); i += 2; } else { pags.push([i], 1); i++; }
+  }
+  let h = capa;
+  for (let p = 0; p < pags.length; p += 2){
+    const idx = pags[p], mod = pags[p + 1];
+    h += `<div class="vpag">` + idx.map(j => volHTML(VOL[j], j + 1, VOL.length, marca, mod)).join("") + `</div>`;
+  }
+  $("volCorpo").innerHTML = h;
+}
+function abrirVol(lista){
+  const ord = Object.keys(GAMES);
+  VOL = lista.filter(a => a && Array.isArray(a.n) && a.n.length).sort((a, b) => ord.indexOf(a.g) - ord.indexOf(b.g) || (a.alvo || 0) - (b.alvo || 0));
+  if (!VOL.length){ toast("Não tem jogo pra imprimir."); return; }
+  renderVol(); $("volOver").hidden = false; document.body.classList.add("volOn"); $("volOver").scrollTop = 0;
+}
+$("volMarca").onchange = renderVol; $("volPag").onchange = renderVol;
+$("volFechar").onclick = () => { $("volOver").hidden = true; document.body.classList.remove("volOn"); };
+$("volPdf").onclick = () => imprimirPDF("Volantes_Loteria.pdf");
+$("volRes").onclick = () => {
+  const g = state.game, alvo = parseInt($("alvoInp").value, 10) || 0, tx = $("alvoDat").textContent || "", dat = /^em /.test(tx) ? tx.slice(3) : "";
+  abrirVol(state.jogos.map((n, i) => ({g, n:n.slice(), ex:(state.exJ && state.exJ[i]) ? {rot:state.exJ[i].rot, txt:state.exJ[i].txt} : null, alvo, dataAlvo:dat, estr:state.estr || ""})));
+};
+$("volAp").onclick = () => { const L = linhasRel().filter(a => !a.res); if (!L.length){ toast("Não tem aposta aguardando resultado."); return; } abrirVol(L); };
+
 
 
 /* ---------- concursos especiais: Mega da Virada e Quina de São João ---------- */
@@ -2393,7 +2531,7 @@ function salvarManual(){
   const ex = exManual(g), data = $("mDat").value.trim(); let novas = 0, dup = 0;
   L.forEach(a => {
     if (APOSTAS.some(x => chaveAp(x.g, x.n, x.alvo) === chaveAp(g, a.n, alvo))){ dup++; return; }
-    APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n:a.n, ex, alvo, dataAlvo:data || espData(g, alvo), esp:espDe(g, alvo), origem, criada:new Date().toISOString(), modo:"", res:null}); novas++;
+    APOSTAS.push({id:Date.now().toString(36) + Math.random().toString(36).slice(2,6), g, n:a.n, ex, alvo, dataAlvo:data || espData(g, alvo), esp:espDe(g, alvo), origem, estr:origem === "foto" ? "Foto (lida do bilhete)" : "Manual (digitada)", criada:new Date().toISOString(), modo:"", res:null}); novas++;
   });
   salvarApostas(); refazerChecks(); const c = conferirApostas();
   $("mTxt").value = ""; $("mSalvar").dataset.origem = ""; $("mFotoBox").hidden = true; previaManual();
